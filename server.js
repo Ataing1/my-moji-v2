@@ -3,7 +3,7 @@ const app = express();
 const { resolve } = require('path');
 // Copy the .env.example in the root into a .env file in this folder
 require('dotenv').config({ path: './.env' });
-
+require('dotenv').config({path: '/custom/project/root/app.yaml'})
 // Ensure environment variables are set.
 checkEnv();
 
