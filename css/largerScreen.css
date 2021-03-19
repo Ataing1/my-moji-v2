@@ -1,0 +1,96 @@
+@media screen and (min-width: 720px) {
+	.navigation {
+		padding: 0 50px;
+	}
+
+	.section {
+		margin-left: 30px;
+		margin-right: 30px;
+	}
+
+	.intro-header{
+		border-radius: 30px;
+	}
+
+	.content-image-wrapper {
+		flex-direction: row;
+		margin-left: 20px;
+		margin-right: 20px;
+
+	}
+
+	.intro-content {
+		max-width: 1140px;
+		margin-left: 20px;
+		margin-top: auto;
+		margin-bottom: auto;
+
+
+	}
+
+	.intro-text{
+		margin: 0;
+		width: 100%;
+
+	}
+
+	.heading-jumbo {
+		font-size: 40px;
+		text-align: start;
+	}
+
+	.paragraph-bigger {
+		font-size: 20px;
+		text-align: start;
+	}
+
+	#section1button {
+		margin-top: 20px;
+		margin-left: 0;
+		margin-bottom: 0;
+	}
+
+	.steve-img {
+		flex-shrink: initial;
+		max-width: 40%;
+		height: auto;
+		object-fit: scale-down;
+		padding: 5px;
+	}
+
+	/*
+
+	INSTRUCTION STYLING
+
+	*/
+
+	.work-heading {
+		font-size: 36px;
+	}
+
+	.collection-wrap {
+		display: flex;
+		flex-direction: row;
+	}
+
+	.instruction-wrap {
+		flex-shrink: initial;
+		display: block;
+		padding-bottom: 30px;
+		padding-left: 15px;
+		padding-right: 45px;
+		width: 33.33%;
+		border-color: black;
+	}
+}
+
+@media screen and (min-width: 1200px) {
+
+	.heading-jumbo {
+		font-size: 45px;
+	}
+
+	.work-heading {
+		font-size: 41px;
+	}
+}
