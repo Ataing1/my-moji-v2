@@ -2,8 +2,14 @@ const express = require('express');
 const app = express();
 const { resolve } = require('path');
 // Copy the .env.example in the root into a .env file in this folder
+//require('dotenv').config({path: '.root/app.yaml'})
 require('dotenv').config({ path: './.env' });
-require('dotenv').config({path: '/custom/project/root/app.yaml'})
+//require('dotenv').config({ path: './app.yaml' });
+
+console.log(require('dotenv').config())
+
+
+printCurrentDir();
 // Ensure environment variables are set.
 checkEnv();
 
@@ -143,9 +149,23 @@ app.listen(4242,()=> console.log('running on http://localhost:4242'));
 
 
 function checkEnv() {
+	
+
 	const price = process.env.PRICE;
+	
 	if(price === "price_12345" || !price) {
 		console.log("You must set a Price ID in the environment variables. Please see the README.");
 		process.exit(0);
 	}
+}
+
+function printCurrentDir(){
+	const directory = './';
+	const fs = require('fs');
+	
+	fs.readdir(directory, (err, files) => {
+		files.forEach(file => {
+			console.log(file);
+		});
+	});
 }
