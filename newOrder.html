@@ -105,7 +105,6 @@
 			.then(function (session) {
 				console.log('session', session);
 				console.log('sessionID', session.id);
-				alert("yep it worked");
 				return stripe.redirectToCheckout({sessionId: session.sessionId});
 			})
 			.then(function (result) {
