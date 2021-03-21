@@ -3,13 +3,22 @@ const app = express();
 const { resolve } = require('path');
 // Copy the .env.example in the root into a .env file in this folder
 //require('dotenv').config({path: '.root/app.yaml'})
-require('dotenv').config({ path: './.env' });
+
 //require('dotenv').config({ path: './app.yaml' });
 
-console.log(require('dotenv').config())
 
 
-printCurrentDir();
+if(process.env.NODE_ENV == 'development'){
+	console.log("THIS IS DEVELOPMENT MODE");
+	console.log(require('dotenv').config())
+	require('dotenv').config({ path: './.env' });
+}else{
+	console.log("THIS IS PRODUCTION MODE");
+	console.log(process.env);
+}
+
+
+//printCurrentDir();
 // Ensure environment variables are set.
 checkEnv();
 
@@ -60,7 +69,6 @@ app.post('/create-checkout-session', async (req, res) => {
 
 	//const quantity = req.body.quantity;
 	//const locale = req.body.locale;
-	console.log('req', req.body);
 	//const { quantity, locale } = req.body;
 
 	// The list of supported payment method types. We fetch this from the
@@ -84,23 +92,11 @@ app.post('/create-checkout-session', async (req, res) => {
 				quantity: 1
 			},
 		],
-		// line_items: [
-		// 	{
-		// 		price_data: {
-		// 			currency: 'usd',
-		// 			product_data: {
-		// 				name: 'T-shirt',
-		// 			},
-		// 			unit_amount: 2000,
-		// 		},
-		// 		quantity: 1,
-		// 	},
-		// ],
 		// ?session_id={CHECKOUT_SESSION_ID} means the redirect will have the session ID set as a query param
 		success_url: `${domainURL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
 		cancel_url: `${domainURL}/newOrder.html`,
 	});
-
+	
 	res.send({
 		sessionId: session.id,
 	});
@@ -145,7 +141,13 @@ app.post('/webhook', async (req, res) => {
 	res.sendStatus(200);
 });
 
-app.listen(4242,()=> console.log('running on http://localhost:4242'));
+let port = process.env.PORT;
+
+if(!port){
+	port = 4242
+}
+
+app.listen(port,()=> console.log('running on http://localhost:'+ port));
 
 
 function checkEnv() {
@@ -157,6 +159,8 @@ function checkEnv() {
 		console.log("You must set a Price ID in the environment variables. Please see the README.");
 		process.exit(0);
 	}
+
+	
 }
 
 function printCurrentDir(){
