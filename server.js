@@ -1,24 +1,18 @@
 const express = require('express');
 const app = express();
 const { resolve } = require('path');
-// Copy the .env.example in the root into a .env file in this folder
-//require('dotenv').config({path: '.root/app.yaml'})
-
-//require('dotenv').config({ path: './app.yaml' });
 
 
-
-if(process.env.NODE_ENV == 'development'){
+//development mode uses DOTENV to load a .env file which contains the enviromental variables. Access via process.env
+if (process.env.NODE_ENV == 'development') {
 	console.log("THIS IS DEVELOPMENT MODE");
 	console.log(require('dotenv').config())
 	require('dotenv').config({ path: './.env' });
-}else{
+} else {
 	console.log("THIS IS PRODUCTION MODE");
 	console.log(process.env);
 }
 
-
-//printCurrentDir();
 // Ensure environment variables are set.
 checkEnv();
 
@@ -42,8 +36,8 @@ app.get('/', (req, res) => {
 	res.sendFile(path);
 });
 
-app.get('/public-keys', (req,res)=>{
-	res.send({key: process.env.STRIPE_PUBLISHABLE_KEY});
+app.get('/public-keys', (req, res) => {
+	res.send({ key: process.env.STRIPE_PUBLISHABLE_KEY });
 });
 
 app.get('/config', async (req, res) => {
@@ -96,7 +90,7 @@ app.post('/create-checkout-session', async (req, res) => {
 		success_url: `${domainURL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
 		cancel_url: `${domainURL}/newOrder.html`,
 	});
-	
+
 	res.send({
 		sessionId: session.id,
 	});
@@ -135,7 +129,7 @@ app.post('/create-checkout-session-test', async (req, res) => {
 		success_url: `${domainURL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
 		cancel_url: `${domainURL}/newOrder.html`,
 	});
-	
+
 	res.send({
 		sessionId: session.id,
 	});
@@ -172,43 +166,67 @@ app.post('/webhook', async (req, res) => {
 		console.log(data);
 		eventType = req.body.type;
 	}
-
 	if (eventType === 'checkout.session.completed') {
 		console.log(`🔔  Payment received!`);
+		sendEmail(data);
 	}
-
 	res.sendStatus(200);
 });
 
-let port = process.env.PORT;
 
-if(!port){
-	port = 4242
+function sendEmail(event) {
+	let nodemailer = require('nodemailer');
+
+	let transporter = nodemailer.createTransport({
+		service: 'gmail',
+		auth: {
+			user: 'ataing1883@gmail.com',
+			pass: process.env.EMAIL_PASS
+		}
+	});
+
+	let mailOptions = {
+		from: 'ataing1883@gmail.com',
+		to: 'ataing1883@gmail.com',
+		subject: 'Sending Email using Node.js',
+		text: 'THE WEB HOOK WORKS ISN"T THAT AMAZING! payment is successful' + event.toString()
+	};
+
+	transporter.sendMail(mailOptions, function (error, info) {
+		if (error) {
+			console.log(error);
+		} else {
+			console.log('Email sent: ' + info.response);
+		}
+	});
 }
 
-app.listen(port,()=> console.log('running on http://localhost:'+ port));
-
-
 function checkEnv() {
-	
-
 	const price = process.env.PRICE;
-	
-	if(price === "price_12345" || !price) {
+	if (price === "price_12345" || !price) {
 		console.log("You must set a Price ID in the environment variables. Please see the README.");
 		process.exit(0);
 	}
-
-	
 }
 
-function printCurrentDir(){
+function printCurrentDir() {
 	const directory = './';
 	const fs = require('fs');
-	
 	fs.readdir(directory, (err, files) => {
 		files.forEach(file => {
 			console.log(file);
 		});
 	});
+}
+
+
+
+
+//LEAVE THIS AT THE END OF THE FILE -- OPENS THE PORT TO LISTEN TO INCOMING REQUESTS
+let port = process.env.PORT;
+if (!port) {
+	port = 4242
+	app.listen(port, () => console.log('running on http://localhost:' + port));
+} else {
+	app.listen(port, () => console.log('Live using port: ' + port));
 }
