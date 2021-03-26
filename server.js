@@ -102,6 +102,45 @@ app.post('/create-checkout-session', async (req, res) => {
 	});
 });
 
+app.post('/create-checkout-session-test', async (req, res) => {
+	console.log("create checkout session called");
+	const domainURL = process.env.DOMAIN;
+
+	//const quantity = req.body.quantity;
+	//const locale = req.body.locale;
+	//const { quantity, locale } = req.body;
+
+	// The list of supported payment method types. We fetch this from the
+	// environment variables in this sample. In practice, users often hard code a
+	// list of strings for the payment method types they plan to support.
+	const pmTypes = (process.env.PAYMENT_METHOD_TYPES || 'card').split(',').map((m) => m.trim());
+
+	// Create new Checkout Session for the order
+	// Other optional params include:
+	// [billing_address_collection] - to display billing address details on the page
+	// [customer] - if you have an existing Stripe Customer ID
+	// [customer_email] - lets you prefill the email input in the Checkout page
+	// For full details see https://stripe.com/docs/api/checkout/sessions/create
+	const session = await stripe.checkout.sessions.create({
+		payment_method_types: pmTypes,
+		mode: 'payment',
+		locale: req.body.locale,
+		line_items: [
+			{
+				price: process.env.PRICE_TEST,
+				quantity: 1
+			},
+		],
+		// ?session_id={CHECKOUT_SESSION_ID} means the redirect will have the session ID set as a query param
+		success_url: `${domainURL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+		cancel_url: `${domainURL}/newOrder.html`,
+	});
+	
+	res.send({
+		sessionId: session.id,
+	});
+});
+
 // Webhook handler for asynchronous events.
 app.post('/webhook', async (req, res) => {
 	let data;
