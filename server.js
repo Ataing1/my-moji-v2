@@ -1,19 +1,18 @@
 const express = require('express');
 const app = express();
-const { resolve } = require('path');
+const {resolve} = require('path');
 app.use(express.json());
-const multer  = require('multer');
+const multer = require('multer');
 const upload = multer();
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
-const path = require("path");
+const {S3Client, PutObjectCommand} = require("@aws-sdk/client-s3");
 const fs = require('fs');
 
 // Set the AWS Region.
 const REGION = "us-east-2"; //e.g. "us-east-1"
 
 // Set the parameters
-const uploadParams = { 
-	Bucket: "mymojibucket", 
+const uploadParams = {
+	Bucket: "mymojibucket",
 	Key: "testObject/test.png",
 	ContentType: "image/png",
 	Body: fs.createReadStream('./icon.png')
@@ -21,25 +20,25 @@ const uploadParams = {
 
 
 // Create an Amazon S3 service client object.
-const s3 = new S3Client({ region: REGION });
+const s3 = new S3Client({region: REGION});
 
 // Upload file to specified bucket.
 const run = async () => {
-  try {
-    const data = await s3.send(new PutObjectCommand(uploadParams));
-    console.log("Success", data);
-  } catch (err) {
-    console.log("Error", err);
-  }
+	try {
+		const data = await s3.send(new PutObjectCommand(uploadParams));
+		console.log("Success", data);
+	} catch (err) {
+		console.log("Error", err);
+	}
 };
 run();
 
 
 //development mode uses DOTENV to load a .env file which contains the enviromental variables. Access via process.env
-if (process.env.NODE_ENV == 'development') {
+if (process.env.NODE_ENV === 'development') {
 	console.log("THIS IS DEVELOPMENT MODE");
 	console.log(require('dotenv').config())
-	require('dotenv').config({ path: './.env' });
+	require('dotenv').config({path: './.env'});
 	const cors = require('cors');
 	app.use(cors());
 } else {
@@ -71,7 +70,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/public-keys', (req, res) => {
-	res.send({ key: process.env.STRIPE_PUBLISHABLE_KEY });
+	res.send({key: process.env.STRIPE_PUBLISHABLE_KEY});
 });
 
 app.get('/config', async (req, res) => {
@@ -86,7 +85,7 @@ app.get('/config', async (req, res) => {
 
 // Fetch the Checkout Session to display the JSON result on the success page
 app.get('/checkout-session', async (req, res) => {
-	const { sessionId } = req.query;
+	const {sessionId} = req.query;
 	const session = await stripe.checkout.sessions.retrieve(sessionId);
 	res.send(session);
 });
@@ -150,7 +149,7 @@ app.post('/webhook', async (req, res) => {
 	if (eventType === 'checkout.session.completed') {
 		console.log(`🔔  Payment received!`);
 		sendEmail(data);
-		//TODO #1 store data in database about the user 
+		//TODO #1 store data in database about the user
 		//TODO #2 slack notify the artist
 
 
@@ -167,7 +166,6 @@ app.post('/form-data', upload.single('photo'), async (req, res) => {
 	console.log("size of array", formDataArray.length);
 
 });
-
 
 
 function sendEmail(event) {
@@ -214,8 +212,6 @@ function printCurrentDir() {
 		});
 	});
 }
-
-
 
 
 //LEAVE THIS AT THE END OF THE FILE -- OPENS THE PORT TO LISTEN TO INCOMING REQUESTS
