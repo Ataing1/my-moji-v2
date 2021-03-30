@@ -1,6 +1,38 @@
 const express = require('express');
 const app = express();
 const { resolve } = require('path');
+app.use(express.json());
+const multer  = require('multer');
+const upload = multer();
+const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+const path = require("path");
+const fs = require('fs');
+
+// Set the AWS Region.
+const REGION = "us-east-2"; //e.g. "us-east-1"
+
+// Set the parameters
+const uploadParams = { 
+	Bucket: "mymojibucket", 
+	Key: "testObject/test.png",
+	ContentType: "image/png",
+	Body: fs.createReadStream('./icon.png')
+};
+
+
+// Create an Amazon S3 service client object.
+const s3 = new S3Client({ region: REGION });
+
+// Upload file to specified bucket.
+const run = async () => {
+  try {
+    const data = await s3.send(new PutObjectCommand(uploadParams));
+    console.log("Success", data);
+  } catch (err) {
+    console.log("Error", err);
+  }
+};
+run();
 
 
 //development mode uses DOTENV to load a .env file which contains the enviromental variables. Access via process.env
@@ -8,6 +40,8 @@ if (process.env.NODE_ENV == 'development') {
 	console.log("THIS IS DEVELOPMENT MODE");
 	console.log(require('dotenv').config())
 	require('dotenv').config({ path: './.env' });
+	const cors = require('cors');
+	app.use(cors());
 } else {
 	console.log("THIS IS PRODUCTION MODE");
 	console.log(process.env);
@@ -60,22 +94,7 @@ app.get('/checkout-session', async (req, res) => {
 app.post('/create-checkout-session', async (req, res) => {
 	console.log("create checkout session called");
 	const domainURL = process.env.DOMAIN;
-
-	//const quantity = req.body.quantity;
-	//const locale = req.body.locale;
-	//const { quantity, locale } = req.body;
-
-	// The list of supported payment method types. We fetch this from the
-	// environment variables in this sample. In practice, users often hard code a
-	// list of strings for the payment method types they plan to support.
 	const pmTypes = (process.env.PAYMENT_METHOD_TYPES || 'card').split(',').map((m) => m.trim());
-
-	// Create new Checkout Session for the order
-	// Other optional params include:
-	// [billing_address_collection] - to display billing address details on the page
-	// [customer] - if you have an existing Stripe Customer ID
-	// [customer_email] - lets you prefill the email input in the Checkout page
-	// For full details see https://stripe.com/docs/api/checkout/sessions/create
 	const session = await stripe.checkout.sessions.create({
 		payment_method_types: pmTypes,
 		mode: 'payment',
@@ -88,46 +107,7 @@ app.post('/create-checkout-session', async (req, res) => {
 		],
 		// ?session_id={CHECKOUT_SESSION_ID} means the redirect will have the session ID set as a query param
 		success_url: `${domainURL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
-		cancel_url: `${domainURL}/newOrder.html`,
-	});
-
-	res.send({
-		sessionId: session.id,
-	});
-});
-
-app.post('/create-checkout-session-test', async (req, res) => {
-	console.log("create checkout session called");
-	const domainURL = process.env.DOMAIN;
-
-	//const quantity = req.body.quantity;
-	//const locale = req.body.locale;
-	//const { quantity, locale } = req.body;
-
-	// The list of supported payment method types. We fetch this from the
-	// environment variables in this sample. In practice, users often hard code a
-	// list of strings for the payment method types they plan to support.
-	const pmTypes = (process.env.PAYMENT_METHOD_TYPES || 'card').split(',').map((m) => m.trim());
-
-	// Create new Checkout Session for the order
-	// Other optional params include:
-	// [billing_address_collection] - to display billing address details on the page
-	// [customer] - if you have an existing Stripe Customer ID
-	// [customer_email] - lets you prefill the email input in the Checkout page
-	// For full details see https://stripe.com/docs/api/checkout/sessions/create
-	const session = await stripe.checkout.sessions.create({
-		payment_method_types: pmTypes,
-		mode: 'payment',
-		locale: req.body.locale,
-		line_items: [
-			{
-				price: process.env.PRICE_TEST,
-				quantity: 1
-			},
-		],
-		// ?session_id={CHECKOUT_SESSION_ID} means the redirect will have the session ID set as a query param
-		success_url: `${domainURL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
-		cancel_url: `${domainURL}/newOrder.html`,
+		cancel_url: `${domainURL}/newOrder.html?status=failed`,
 	});
 
 	res.send({
@@ -137,6 +117,7 @@ app.post('/create-checkout-session-test', async (req, res) => {
 
 // Webhook handler for asynchronous events.
 app.post('/webhook', async (req, res) => {
+	console.log("webhook called");
 	let data;
 	let eventType;
 	// Check if webhook signing is configured.
@@ -169,9 +150,24 @@ app.post('/webhook', async (req, res) => {
 	if (eventType === 'checkout.session.completed') {
 		console.log(`🔔  Payment received!`);
 		sendEmail(data);
+		//TODO #1 store data in database about the user 
+		//TODO #2 slack notify the artist
+
+
 	}
 	res.sendStatus(200);
 });
+
+
+let formDataArray = []
+app.post('/form-data', upload.single('photo'), async (req, res) => {
+	console.log("req.body", req.body);
+	console.log("req.file", req.file)
+	formDataArray.push(req.body);
+	console.log("size of array", formDataArray.length);
+
+});
+
 
 
 function sendEmail(event) {
@@ -223,9 +219,9 @@ function printCurrentDir() {
 
 
 //LEAVE THIS AT THE END OF THE FILE -- OPENS THE PORT TO LISTEN TO INCOMING REQUESTS
-let port = process.env.PORT;
-if (!port) {
-	port = 4242
+let port = process.env.PORT || 4242;
+
+if (port == 4242) {
 	app.listen(port, () => console.log('running on http://localhost:' + port));
 } else {
 	app.listen(port, () => console.log('Live using port: ' + port));
