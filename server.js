@@ -10,6 +10,7 @@ const fs = require('fs');
 // Set the AWS Region.
 const REGION = "us-east-2"; //e.g. "us-east-1"
 
+
 // Set the parameters
 const uploadParams = {
 	Bucket: "mymojibucket",
