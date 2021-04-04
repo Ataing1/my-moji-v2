@@ -63,7 +63,7 @@
 						<p>Upload a close-up!</p>
 						<img class="preview-image" src="#" id="blah" alt="">
 						<label for="image-upload"></label>
-						<input type="file" class="image-upload-button" id="image-upload" accept="image/*" required
+						<input type="file" name="upload" class="image-upload-button" id="image-upload" accept="image/*" placeholder="Select File" required
 							onchange="return validateFileUpload()">
 					</div>
 					<button id="pay">Pay</button>
@@ -105,14 +105,20 @@
 			e.preventDefault();
 			// Create a new Checkout Session using the server-side endpoint you
 			// created in step 3.
-			
+
 			let formData = new FormData();
 			const name = document.getElementById("order-name");
 			const email = document.getElementById("order-email");
 			let fuData = document.getElementById('image-upload');
+
 			formData.append("name", name.value);
 			formData.append("email", email.value);
-			formData.append("file", fuData.value);
+			formData.append("upload", fuData.files[0]);
+			console.log("file upload fuData.files[0]", fuData.files[0]);
+			console.log("file upload fuData.value", fuData.value);
+
+
+			//TODO form data not getting into the database correclty
 			fetch('/form-data', {
 				method: 'POST',
 				body: formData,
@@ -138,7 +144,7 @@
 				})
 				.then(function (session) {
 					console.log('session', session);
-					console.log('sessionID', session.id);
+					console.log('sessionID', session.sessionId);
 					return stripe.redirectToCheckout({ sessionId: session.sessionId });
 				})
 				.then(function (result) {

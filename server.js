@@ -6,36 +6,10 @@ const multer = require('multer');
 const upload = multer();
 const {S3Client, PutObjectCommand} = require("@aws-sdk/client-s3");
 const fs = require('fs');
-
-// Set the AWS Region.
-const REGION = "us-east-2"; //e.g. "us-east-1"
+const REGION = "us-east-2"; // Set the AWS Region. e.g. "us-east-1"
 
 
-// Set the parameters
-const uploadParams = {
-	Bucket: "mymojibucket",
-	Key: "testObject/test.png",
-	ContentType: "image/png",
-	Body: fs.createReadStream('./icon.png')
-};
-
-
-// Create an Amazon S3 service client object.
-const s3 = new S3Client({region: REGION});
-
-// Upload file to specified bucket.
-const run = async () => {
-	try {
-		const data = await s3.send(new PutObjectCommand(uploadParams));
-		console.log("Success", data);
-	} catch (err) {
-		console.log("Error", err);
-	}
-};
-run();
-
-
-//development mode uses DOTENV to load a .env file which contains the enviromental variables. Access via process.env
+//development mode uses DOTENV to load a .env file which contains the environmental variables. Access via process.env
 if (process.env.NODE_ENV === 'development') {
 	console.log("THIS IS DEVELOPMENT MODE");
 	console.log(require('dotenv').config())
@@ -47,14 +21,11 @@ if (process.env.NODE_ENV === 'development') {
 	console.log(process.env);
 }
 
-// Ensure environment variables are set.
-checkEnv();
-
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+checkEnv(); //check if price environmental variable is set for STRIPE
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY); //init stripe
 
 app.use(express.static(process.env.STATIC_DIR));
-app.use(
-	express.json({
+app.use(express.json({
 		// We need the raw body to verify webhook signatures.
 		// Let's compute it only when hitting the Stripe webhook endpoint.
 		verify: function (req, res, buf) {
@@ -160,13 +131,18 @@ app.post('/webhook', async (req, res) => {
 
 
 let formDataArray = []
-app.post('/form-data', upload.single('photo'), async (req, res) => {
+app.post('/form-data', upload.single('upload'), async (req, res) => {
+	console.log("req.file", req.file);
 	console.log("req.body", req.body);
-	console.log("req.file", req.file)
 	formDataArray.push(req.body);
 	console.log("size of array", formDataArray.length);
+	//let testImg = fs.createReadStream(req.body.file);
+	//console.log("testimg", testImg);
+	await uploadFormToAWS(req.file, "1234-aaaa");
 
 });
+
+
 
 
 function sendEmail(event) {
@@ -204,15 +180,46 @@ function checkEnv() {
 	}
 }
 
-function printCurrentDir() {
-	const directory = './';
-	const fs = require('fs');
-	fs.readdir(directory, (err, files) => {
-		files.forEach(file => {
-			console.log(file);
-		});
-	});
+async function uploadFormToAWS(file,uuid) {
+
+	console.log("enter form upload");
+
+	let imageParams = {
+		Bucket: "mymojibucket",
+		Key: uuid+"-initialUpload.png",
+		ContentType: "image/png",
+		// Body: file //DOES NOT WORK
+		Body: file.buffer
+		// Body: fs.createReadStream(body.file) //DOES NOT WORK
+	};
+
+
+	// Create an Amazon S3 service client object.
+	const s3 = new S3Client({region: REGION});
+	try {
+		const data = await s3.send(new PutObjectCommand(imageParams));
+		console.log("Success", data);
+	} catch (err) {
+		console.log("Error", err);
+	}
+
 }
+
+
+
+
+
+
+// // Upload file to specified bucket.
+// const run = async () => {
+// 	try {
+// 		const data = await s3.send(new PutObjectCommand(uploadParams));
+// 		console.log("Success", data);
+// 	} catch (err) {
+// 		console.log("Error", err);
+// 	}
+// };
+// run();
 
 
 //LEAVE THIS AT THE END OF THE FILE -- OPENS THE PORT TO LISTEN TO INCOMING REQUESTS
