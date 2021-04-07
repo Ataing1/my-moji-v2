@@ -4,7 +4,9 @@ const {resolve} = require('path');
 app.use(express.json());
 const multer = require('multer');
 const upload = multer();
-const {S3Client, PutObjectCommand} = require("@aws-sdk/client-s3");
+const url = require('url');
+const {S3Client, PutObjectCommand, GetObjectCommand} = require("@aws-sdk/client-s3");
+const { getSignedUrl  } = require("@aws-sdk/s3-request-presigner");
 const fs = require('fs');
 const REGION = "us-east-2"; // Set the AWS Region. e.g. "us-east-1"
 
@@ -130,6 +132,7 @@ app.post('/webhook', async (req, res) => {
 });
 
 
+//TODO this doesn;t need to be so convoluted, make the call shorter and clean up necessary details
 let formDataArray = []
 app.post('/form-data', upload.single('upload'), async (req, res) => {
 	console.log("req.file", req.file);
@@ -142,7 +145,68 @@ app.post('/form-data', upload.single('upload'), async (req, res) => {
 
 });
 
+app.get('/photo/:uuid', async (req, res) => {
+	console.log("uid: ", req.params.uuid);
+	let uuid = req.params.uuid;
+	let imageParams = {
+		Bucket: "mymojibucket",
+		Key: uuid + "-initialUpload.png",
+	}
+	const s3 = new S3Client({region: REGION});
 
+	try {
+		// Create the command.
+		const command = new GetObjectCommand(imageParams);
+
+		// Create the presigned URL.
+		const signedUrl = await getSignedUrl(s3, command, {
+			expiresIn: 3600,
+		});
+		console.log(
+			`\nGetting "${imageParams.Key}" using signedUrl in v3`
+		);
+		console.log(signedUrl);
+
+		res.send({"signed": signedUrl, "potatoe": "i spelled that wrong"});
+	}
+	catch (err) {
+		console.log("Error creating presigned URL", err);
+	}
+
+
+	// try {
+	// 	s3.send(new GetObjectCommand(imageParams))
+	// 		.then(data => {
+	// 			console.log("success, bucket returned: ", data.Body);
+	// 			let buf = Buffer.from(data.Body).toString('base64');
+	// 			// let base64 = buf.toString('base64');
+	// 			buf = "data:" + data.ContentType + ";base64," + buf;
+	// 			let response = {
+	// 				"statusCode": 200,
+	// 				"headers": {
+	// 					'Content-Type': data.ContentType
+	// 				},
+	// 				"body": buf,
+	// 				"isBase64Encoded": true
+	// 			}
+	// 			res.send(response);
+	// 		})
+	// } catch (err) {
+	// 	console.log("Error", err);
+	// }
+
+	// try {
+	// 	const data = await s3.send(new GetObjectCommand(imageParams));
+	// 	console.log("Success, bucket returned", data);
+	// 	res.writeHead(200, {'Content-Type': 'image/jpeg'});
+	// 	res.write(data.Body, 'binary');
+	// 	res.end(null, 'binary');
+	// } catch (err) {
+	// 	console.log("Error", err);
+	// }
+
+
+})
 
 
 function sendEmail(event) {
@@ -180,13 +244,13 @@ function checkEnv() {
 	}
 }
 
-async function uploadFormToAWS(file,uuid) {
+async function uploadFormToAWS(file, uuid) {
 
 	console.log("enter form upload");
 
 	let imageParams = {
 		Bucket: "mymojibucket",
-		Key: uuid+"-initialUpload.png",
+		Key: uuid + "-initialUpload.png",
 		ContentType: "image/png",
 		// Body: file //DOES NOT WORK
 		Body: file.buffer
@@ -204,10 +268,6 @@ async function uploadFormToAWS(file,uuid) {
 	}
 
 }
-
-
-
-
 
 
 // // Upload file to specified bucket.

@@ -34,12 +34,15 @@
 	</div>
 </nav>
 <section class="section">
-    <p class="heading-jumbo">Hooray! Your MyMoji is now in progress.</p>
-    <p class="paragraph-bigger">Our artists will get to work right away. We'll email you when your MyMoji is ready (expect to hear back from us within 24-48 hours). We think you'll love it, but once you receive your MyMoji you'll also be able to request any changes you think will make it that much better.</p>
-    <p class="work-heading" style="text-align: left;">Here's your order number:</p>
-    <p id="order-number" style="font-style: italic;"></p>
-    <p class="paragraph-bigger">If you have any questions you can reach us at contact@mymoji.com</p>
-    <!-- <a href="mailto:contact@mymoji.com">here</a> -->
+	<p class="heading-jumbo">Hooray! Your MyMoji is now in progress.</p>
+	<p class="paragraph-bigger">Our artists will get to work right away. We'll email you when your MyMoji is ready
+		(expect to hear back from us within 24-48 hours). We think you'll love it, but once you receive your MyMoji
+		you'll also be able to request any changes you think will make it that much better.</p>
+	<p class="work-heading" style="text-align: left;">Here's your order number:</p>
+	<p id="order-number" style="font-style: italic;"></p>
+	<p class="paragraph-bigger">If you have any questions you can reach us at contact@mymoji.com</p>
+	<img class="preview-image" src="#" id="order-image-test" alt="">
+	<!-- <a href="mailto:contact@mymoji.com">here</a> -->
 </section>
 <script charset="UTF-8">
 	// gets the query and example of getting a query object
@@ -48,5 +51,15 @@
 	// const urlParams = new URLSearchParams(queryString);
 	// const sessionID = urlParams.get('session_id');
 	// console.log(sessionID);
-	
+	fetch("/photo/1234-aaaa").then((response) => response.json())
+		.then((data) => {
+			console.log("data", data);
+			console.log("data", data.signed);
+			console.log("data", data.potatoe);
+			document.getElementById('order-image-test').src = data.signed;
+		})
+		.catch((error) => {
+			console.error('Error: ', error);
+		});
+
 </script>

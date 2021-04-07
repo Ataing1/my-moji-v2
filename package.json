@@ -13,11 +13,13 @@
 	},
 	"devDependencies": {
 		"cross-env": "^7.0.3",
+		"node-fetch": "^2.6.1",
 		"parcel-bundler": "^1.12.4"
 	},
 	"dependencies": {
 		"@aws-sdk/client-s3": "^3.3.0",
 		"@aws-sdk/node-http-handler": "^3.3.0",
+		"@aws-sdk/s3-request-presigner": "^3.11.0",
 		"@aws-sdk/types": "^3.3.0",
 		"body-parser": "^1.19.0",
 		"cors": "^2.8.5",
