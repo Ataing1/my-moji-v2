@@ -10,229 +10,222 @@
 	<link rel="stylesheet" href="css/largerScreen.css">
 	<link rel="preconnect" href="https://fonts.gstatic.com">
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;1,300;1,400&display=swap"
-		rel="stylesheet">
+		  rel="stylesheet">
 	<meta name="theme-color" content="#fafafa">
 </head>
 
 <body>
-	<script src="js/vendor/modernizr-3.11.2.min.js"></script>
-	<script src="js/plugins.js"></script>
-	<script src="js/main.js"></script>
+<script src="js/vendor/modernizr-3.11.2.min.js"></script>
+<script src="js/plugins.js"></script>
+<script src="js/main.js"></script>
 
-	<!--navigation-->
-	<nav class="navigation">
-		<!--	navigation wrap-->
-		<div class="navigation-wrap">
-			<!--		logo link-->
-			<a href="/" class="logo">
-				<img class="logo-image" src="img/Logo@2x.png" alt="LOGO" />
-			</a>
-			<!--		navigation items-->
-			<ul>
-				<li><a href="#">About Us</a></li>
-				<li><a href="#">Stickers</a></li>
-				<li><a href="#">Contact</a></li>
-			</ul>
-		</div>
-	</nav>
+<!--navigation-->
+<nav class="navigation">
+	<!--	navigation wrap-->
+	<div class="navigation-wrap">
+		<!--		logo link-->
+		<a href="/" class="logo">
+			<img class="logo-image" src="img/Logo@2x.png" alt="LOGO"/>
+		</a>
+		<!--		navigation items-->
+		<ul>
+			<li><a href="#">About Us</a></li>
+			<li><a href="#">Stickers</a></li>
+			<li><a href="#">Contact</a></li>
+		</ul>
+	</div>
+</nav>
 
-	<section class="section">
-		<div class="container">
-			<div class="order-wrapper">
-				<div class="order-heading-wrap">
-					<p id="order-header-pt1">Custom Emoji, only $15</p>
-					<p id="order-header-pt2">Enter your MyMoji Details</p>
-					<p id="order-header-pt3">We will email you when the MyMoji is ready</p>
-				</div>
-				<form id="orderForm" class="order-form">
-					<div class="order-form-inner-wrapper">
-						<label for="order-name"></label>
-						<input id="order-name" type="text" class="text-field" placeholder="Name" required>
-						<label for="order-email"></label>
-						<input id="order-email" autocomplete="email" type="email" class="text-field" placeholder="Email"
-							required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
-						<p>What would you like us to know when making your MyMoji (optional)</p>
-						<label class="label" for="other-information"></label>
-						<textarea id="other-information" type="text" class="text-field" rows="4" cols="50"></textarea>
-						<p>Note: We can only include one person or animal in your emoji. Also, the artists work with the
-							close-up you send, so we don't allow you to say "give me cool sunglasses." But if you want
-							to,
-							get some cool sunglasses and upload a new close-up, that will work.</p>
-					</div>
-					<div>
-						<p>Upload a close-up!</p>
-						<img class="preview-image" src="#" id="blah" alt="">
-						<label for="image-upload"></label>
-						<input type="file" name="upload" class="image-upload-button" id="image-upload" accept="image/*" placeholder="Select File" required
-							onchange="return validateFileUpload()">
-					</div>
-					<button id="pay">Pay</button>
-				</form>
-
+<section class="section">
+	<div class="container">
+		<div class="order-wrapper">
+			<div class="order-heading-wrap">
+				<p id="order-header-pt1">Custom Emoji, only $15</p>
+				<p id="order-header-pt2">Enter your MyMoji Details</p>
+				<p id="order-header-pt3">We will email you when the MyMoji is ready</p>
 			</div>
+			<form id="orderForm" class="order-form">
+				<div class="order-form-inner-wrapper">
+					<label for="order-name"></label>
+					<input id="order-name" type="text" class="text-field" placeholder="Name" required>
+					<label for="order-email"></label>
+					<input id="order-email" autocomplete="email" type="email" class="text-field" placeholder="Email"
+						   required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+					<p>What would you like us to know when making your MyMoji (optional)</p>
+					<label class="label" for="other-information"></label>
+					<textarea id="other-information" type="text" class="text-field" rows="4" cols="50"></textarea>
+					<p>Note: We can only include one person or animal in your emoji. Also, the artists work with the
+						close-up you send, so we don't allow you to say "give me cool sunglasses." But if you want
+						to,
+						get some cool sunglasses and upload a new close-up, that will work.</p>
+				</div>
+				<div>
+					<p>Upload a close-up!</p>
+					<img class="preview-image" src="#" id="blah" alt="">
+					<label for="image-upload"></label>
+					<input type="file" name="upload" class="image-upload-button" id="image-upload" accept="image/*"
+						   placeholder="Select File" required
+						   onchange="return validateFileUpload()">
+				</div>
+				<button id="pay">Pay</button>
+			</form>
+
 		</div>
+	</div>
 
 
-	</section>
+</section>
 
-	<script src="https://js.stripe.com/v3/"></script>
-	<script charset="UTF-8">
-		// Create an instance of the Stripe object with your publishable API key
-		let stripe;
-		fetch('/public-keys')
-			.then((response) => response.json())
-			.then((data) => {
-				stripe = Stripe(data.key);
-			})
-			.catch((error) => {
-				console.error('Error: ', error);
-			});
-		var checkoutButton = document.getElementById('pay');
-
-		const queryString = window.location.search;
-		console.log(queryString);
-		const urlParams = new URLSearchParams(queryString);
-		const status = urlParams.get('status');
-		console.log(status);
-
-		checkoutButton.addEventListener('click', function (e) {
-			if (!validateForm()) {
-				console.log("input invalid returning");
-				return;
-			}
-			console.log('input valid continuing to fetch');
-
-			e.preventDefault();
-			// Create a new Checkout Session using the server-side endpoint you
-			// created in step 3.
-
-			let formData = new FormData();
-			const name = document.getElementById("order-name");
-			const email = document.getElementById("order-email");
-			let fuData = document.getElementById('image-upload');
-
-			formData.append("name", name.value);
-			formData.append("email", email.value);
-			formData.append("upload", fuData.files[0]);
-			console.log("file upload fuData.files[0]", fuData.files[0]);
-			console.log("file upload fuData.value", fuData.value);
-
-
-			//TODO form data not getting into the database correclty
-			fetch('/form-data', {
-				method: 'POST',
-				body: formData,
-			})
-				.then(function (response) {
-					console.log(response);
-				})
-				.then(data => {
-					console.log('Success:', data);
-				})
-				.catch((error) => {
-					console.error('Error:', error);
-				});
-
-
-
-			fetch('/create-checkout-session', {
-				method: 'POST',
-			})
-				.then(function (response) {
-					console.log(response);
-					return response.json();
-				})
-				.then(function (session) {
-					console.log('session', session);
-					console.log('sessionID', session.sessionId);
-					return stripe.redirectToCheckout({ sessionId: session.sessionId });
-				})
-				.then(function (result) {
-					// If `redirectToCheckout` fails due to a browser or network
-					// error, you should display the localized error message to your
-					// customer using `error.message`.
-					if (result.error) {
-						alert(result.error.message);
-					}
-				})
-				.catch(function (error) {
-					console.error('Error:', error);
-				});
+<script src="https://js.stripe.com/v3/"></script>
+<script charset="UTF-8">
+	// Create an instance of the Stripe object with your publishable API key
+	let stripe;
+	let uuid;
+	fetch('/public-keys')
+		.then((response) => response.json())
+		.then((data) => {
+			stripe = Stripe(data.key);
+		})
+		.catch((error) => {
+			console.error('Error: ', error);
+		});
+	fetch('/uuid')
+		.then((response) => response.json())
+		.then((data) => {
+			uuid = data.uuid;
+		})
+		.catch((error) => {
+			console.error('Error: ', error);
 		});
 
-		function validateForm() {
-			let valid = true;
-			const name = document.getElementById("order-name");
+	let checkoutButton = document.getElementById('pay');
 
-			if (name.value.length === 0) {
-				document.getElementById("order-name").classList.add('is-invalid');
-				name.setCustomValidity("Please enter your name");
-				valid = false;
-			} else {
-				document.getElementById("order-name").classList.remove('is-invalid');
-				name.setCustomValidity("");
-			}
+	checkoutButton.addEventListener('click', function (e) {
+		if (!validateForm()) {
+			console.log("input invalid returning");
+			return;
+		}else{
+			console.log('input valid continuing to fetch');
+		}
+		e.preventDefault();
 
-			const email = document.getElementById("order-email");
-			let mailFormat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-			if (!email.value.match(mailFormat)) {
-				document.getElementById("order-email").classList.add('is-invalid');
-				email.setCustomValidity("Please enter a valid Email Address");
-				valid = false;
-			} else {
-				document.getElementById("order-email").classList.remove('is-invalid');
-				email.setCustomValidity("");
-			}
+		let formData = new FormData();
+		const name = document.getElementById("order-name");
+		const email = document.getElementById("order-email");
+		let fuData = document.getElementById('image-upload');
 
-			if (!validateFileUpload()) {
-				valid = false;
-			}
+		formData.append("name", name.value);
+		formData.append("email", email.value);
+		formData.append("upload", fuData.files[0]);
+		formData.append("uuid", uuid);
 
-			return valid;
+		fetch('/create-checkout-session/'+uuid, {
+			method: 'POST',
+		})
+			.then(function (response) {
+				console.log(response);
+				return response.json();
+			})
+			.then(function (session) {
+				console.log('session', session);
+				console.log('sessionID', session.sessionId);
+				formData.append("sessionID", session.sessionId);
+				postFormData(formData);
+				return stripe.redirectToCheckout({sessionId: session.sessionId});
+			})
+			.then(function (result) {
+				// If `redirectToCheckout` fails due to a browser or network
+				// error, you should display the localized error message to your
+				// customer using `error.message`.
+				if (result.error) {
+					alert(result.error.message);
+				}
+			})
+			.catch(function (error) {
+				console.error('Error:', error);
+			});
+	});
+
+	function postFormData(formData) {
+		fetch('/form-data', {
+			method: 'POST',
+			body: formData,
+		})
+	}
+
+	function validateForm() {
+		let valid = true;
+		const name = document.getElementById("order-name");
+
+		if (name.value.length === 0) {
+			document.getElementById("order-name").classList.add('is-invalid');
+			name.setCustomValidity("Please enter your name");
+			valid = false;
+		} else {
+			document.getElementById("order-name").classList.remove('is-invalid');
+			name.setCustomValidity("");
 		}
 
-		function validateFileUpload() {
-			let valid = true;
-			let fuData = document.getElementById('image-upload');
-			let FileUploadPath = fuData.value;
+		const email = document.getElementById("order-email");
+		let mailFormat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+		if (!email.value.match(mailFormat)) {
+			document.getElementById("order-email").classList.add('is-invalid');
+			email.setCustomValidity("Please enter a valid Email Address");
+			valid = false;
+		} else {
+			document.getElementById("order-email").classList.remove('is-invalid');
+			email.setCustomValidity("");
+		}
 
-			//To check if user upload any file
-			if (FileUploadPath === '') {
+		if (!validateFileUpload()) {
+			valid = false;
+		}
+
+		return valid;
+	}
+
+	function validateFileUpload() {
+		let valid = true;
+		let fuData = document.getElementById('image-upload');
+		let FileUploadPath = fuData.value;
+
+		//To check if user upload any file
+		if (FileUploadPath === '') {
+			fuData.setCustomValidity("Please upload an image");
+			fuData.classList.add('is-invalid');
+			valid = false;
+		} else {
+			fuData.setCustomValidity("");
+			fuData.classList.remove('is-invalid');
+			let Extension = FileUploadPath.substring(
+				FileUploadPath.lastIndexOf('.') + 1).toLowerCase();
+
+			//The file uploaded is an image
+
+			if (Extension === "gif" || Extension === "png" || Extension === "bmp"
+				|| Extension === "jpeg" || Extension === "jpg") {
+
+				// To Display
+				if (fuData.files && fuData.files[0]) {
+					let reader = new FileReader();
+					reader.onload = function (e) {
+						document.getElementById('blah').src = e.target.result;
+					}
+					reader.readAsDataURL(fuData.files[0]);
+				}
+
+			}
+
+			//The file upload is NOT an image
+			else {
 				fuData.setCustomValidity("Please upload an image");
 				fuData.classList.add('is-invalid');
 				valid = false;
-			} else {
-				fuData.setCustomValidity("");
-				fuData.classList.remove('is-invalid');
-				let Extension = FileUploadPath.substring(
-					FileUploadPath.lastIndexOf('.') + 1).toLowerCase();
-
-				//The file uploaded is an image
-
-				if (Extension === "gif" || Extension === "png" || Extension === "bmp"
-					|| Extension === "jpeg" || Extension === "jpg") {
-
-					// To Display
-					if (fuData.files && fuData.files[0]) {
-						let reader = new FileReader();
-						reader.onload = function (e) {
-							document.getElementById('blah').src = e.target.result;
-						}
-						reader.readAsDataURL(fuData.files[0]);
-					}
-
-				}
-
-				//The file upload is NOT an image
-				else {
-					fuData.setCustomValidity("Please upload an image");
-					fuData.classList.add('is-invalid');
-					valid = false;
-				}
 			}
-			return valid;
 		}
-	</script>
+		return valid;
+	}
+</script>
 
 </body>
 

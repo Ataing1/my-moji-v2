@@ -46,12 +46,14 @@
 </section>
 <script charset="UTF-8">
 	// gets the query and example of getting a query object
-	// const queryString = window.location.search;
-	// console.log(queryString);
-	// const urlParams = new URLSearchParams(queryString);
-	// const sessionID = urlParams.get('session_id');
-	// console.log(sessionID);
-	fetch("/photo/1234-aaaa").then((response) => response.json())
+	const queryString = window.location.search;
+	 console.log(queryString);
+	const urlParams = new URLSearchParams(queryString);
+	const sessionID = urlParams.get('session_id');
+	console.log(sessionID);
+	const uuid = urlParams.get('uuid');
+	console.log("uuid query", uuid);
+	fetch("/photo/"+uuid+"/INITIAL_UPLOAD").then((response) => response.json())
 		.then((data) => {
 			console.log("data", data);
 			console.log("data", data.signed);

@@ -9,6 +9,8 @@ const {S3Client, PutObjectCommand, GetObjectCommand} = require("@aws-sdk/client-
 const { getSignedUrl  } = require("@aws-sdk/s3-request-presigner");
 const fs = require('fs');
 const REGION = "us-east-2"; // Set the AWS Region. e.g. "us-east-1"
+const { v4: uuidV4 } = require('uuid')
+
 
 
 //development mode uses DOTENV to load a .env file which contains the environmental variables. Access via process.env
@@ -64,7 +66,7 @@ app.get('/checkout-session', async (req, res) => {
 	res.send(session);
 });
 
-app.post('/create-checkout-session', async (req, res) => {
+app.post('/create-checkout-session/:uuid', async (req, res) => {
 	console.log("create checkout session called");
 	const domainURL = process.env.DOMAIN;
 	const pmTypes = (process.env.PAYMENT_METHOD_TYPES || 'card').split(',').map((m) => m.trim());
@@ -79,8 +81,8 @@ app.post('/create-checkout-session', async (req, res) => {
 			},
 		],
 		// ?session_id={CHECKOUT_SESSION_ID} means the redirect will have the session ID set as a query param
-		success_url: `${domainURL}/success.html?session_id={CHECKOUT_SESSION_ID}`,
-		cancel_url: `${domainURL}/newOrder.html?status=failed`,
+		success_url: `${domainURL}/success.html?session_id={CHECKOUT_SESSION_ID}&uuid=`+req.params.uuid,
+		cancel_url: `${domainURL}/newOrder.html`,
 	});
 
 	res.send({
@@ -131,81 +133,25 @@ app.post('/webhook', async (req, res) => {
 	res.sendStatus(200);
 });
 
+app.get('/uuid', async (request, response)=>{
+	response.send({uuid: uuidV4()})
+})
 
-//TODO this doesn;t need to be so convoluted, make the call shorter and clean up necessary details
-let formDataArray = []
 app.post('/form-data', upload.single('upload'), async (req, res) => {
 	console.log("req.file", req.file);
 	console.log("req.body", req.body);
-	formDataArray.push(req.body);
-	console.log("size of array", formDataArray.length);
-	//let testImg = fs.createReadStream(req.body.file);
-	//console.log("testimg", testImg);
-	await uploadFormToAWS(req.file, "1234-aaaa");
+	let {name, email, uuid, sessionID} = req.body;
+	console.log(name, email, uuid, sessionID);
+	//upload user data to databse of some sort
+	await uploadImageToS3(req.file, uuid);
 
 });
 
-app.get('/photo/:uuid', async (req, res) => {
-	console.log("uid: ", req.params.uuid);
-	let uuid = req.params.uuid;
-	let imageParams = {
-		Bucket: "mymojibucket",
-		Key: uuid + "-initialUpload.png",
-	}
-	const s3 = new S3Client({region: REGION});
-
-	try {
-		// Create the command.
-		const command = new GetObjectCommand(imageParams);
-
-		// Create the presigned URL.
-		const signedUrl = await getSignedUrl(s3, command, {
-			expiresIn: 3600,
-		});
-		console.log(
-			`\nGetting "${imageParams.Key}" using signedUrl in v3`
-		);
-		console.log(signedUrl);
-
-		res.send({"signed": signedUrl, "potatoe": "i spelled that wrong"});
-	}
-	catch (err) {
-		console.log("Error creating presigned URL", err);
-	}
-
-
-	// try {
-	// 	s3.send(new GetObjectCommand(imageParams))
-	// 		.then(data => {
-	// 			console.log("success, bucket returned: ", data.Body);
-	// 			let buf = Buffer.from(data.Body).toString('base64');
-	// 			// let base64 = buf.toString('base64');
-	// 			buf = "data:" + data.ContentType + ";base64," + buf;
-	// 			let response = {
-	// 				"statusCode": 200,
-	// 				"headers": {
-	// 					'Content-Type': data.ContentType
-	// 				},
-	// 				"body": buf,
-	// 				"isBase64Encoded": true
-	// 			}
-	// 			res.send(response);
-	// 		})
-	// } catch (err) {
-	// 	console.log("Error", err);
-	// }
-
-	// try {
-	// 	const data = await s3.send(new GetObjectCommand(imageParams));
-	// 	console.log("Success, bucket returned", data);
-	// 	res.writeHead(200, {'Content-Type': 'image/jpeg'});
-	// 	res.write(data.Body, 'binary');
-	// 	res.end(null, 'binary');
-	// } catch (err) {
-	// 	console.log("Error", err);
-	// }
-
-
+app.get('/photo/:uuid/:type', async (req, res) => {
+	console.log("uuid: ", req.params.uuid);
+	console.log("uuid: ", req.params.type);
+	const data = await getImageUrlFromS3(req.params.uuid, req.params.type);
+	res.send(data);
 })
 
 
@@ -244,42 +190,61 @@ function checkEnv() {
 	}
 }
 
-async function uploadFormToAWS(file, uuid) {
+async function getImageUrlFromS3(uuid, type){
+	let imageParams = {
+		Bucket: "mymojibucket",
+		Key: "",
+	}
+	if (type === "INITIAL_UPLOAD"){
+		imageParams.Key = uuid + "/initialUpload.png";
+	}else if(type === "RENDITION"){
+		imageParams.Key = uuid + ""; //insert some other path to the rendition photo
+	}
+
+	const s3 = new S3Client({region: REGION});
+
+	try {
+		// Create the command.
+		const command = new GetObjectCommand(imageParams);
+
+		// Create the presigned URL.
+		const signedUrl = await getSignedUrl(s3, command, {
+			expiresIn: 3600,
+		});
+		console.log(`\nGetting "${imageParams.Key}" using signedUrl in v3`);
+		console.log(signedUrl);
+
+		return ({"signed": signedUrl, "potatoe": "i spelled that wrong"});
+	}
+	catch (err) {
+		console.log("Error creating presigned URL", err);
+	}
+}
+
+async function uploadImageToS3(file, uuid) {
 
 	console.log("enter form upload");
 
 	let imageParams = {
 		Bucket: "mymojibucket",
-		Key: uuid + "-initialUpload.png",
+		Key: uuid + "/initialUpload.png",
 		ContentType: "image/png",
 		// Body: file //DOES NOT WORK
 		Body: file.buffer
 		// Body: fs.createReadStream(body.file) //DOES NOT WORK
 	};
 
-
 	// Create an Amazon S3 service client object.
 	const s3 = new S3Client({region: REGION});
 	try {
 		const data = await s3.send(new PutObjectCommand(imageParams));
-		console.log("Success", data);
+		// console.log("Success", data);
 	} catch (err) {
 		console.log("Error", err);
+
 	}
 
 }
-
-
-// // Upload file to specified bucket.
-// const run = async () => {
-// 	try {
-// 		const data = await s3.send(new PutObjectCommand(uploadParams));
-// 		console.log("Success", data);
-// 	} catch (err) {
-// 		console.log("Error", err);
-// 	}
-// };
-// run();
 
 
 //LEAVE THIS AT THE END OF THE FILE -- OPENS THE PORT TO LISTEN TO INCOMING REQUESTS
