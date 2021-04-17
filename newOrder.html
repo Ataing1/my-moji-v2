@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>Order</title>
+	<title>New Order</title>
 	<link rel="stylesheet" href="css/normalize.css">
 	<link rel="stylesheet" href="css/main.css">
 	<link rel="stylesheet" href="css/style.css">
@@ -80,10 +80,10 @@
 <script charset="UTF-8">
 	// Create an instance of the Stripe object with your publishable API key
 	let stripe;
-	fetch('/public-keys')
+	fetch('/config')
 		.then((response) => response.json())
 		.then((data) => {
-			stripe = Stripe(data.key);
+			stripe = Stripe(data.publicKey);
 		})
 		.catch((error) => {
 			console.error('Error: ', error);

@@ -4,20 +4,8 @@ const {resolve} = require('path');
 app.use(express.json());
 const multer = require('multer');
 const upload = multer();
-const url = require('url');
-const {S3Client, PutObjectCommand, GetObjectCommand} = require("@aws-sdk/client-s3");
-const {
-	DynamoDBClient,
-	PutItemCommand,
-	GetItemCommand,
-	UpdateItemCommand,
-} = require("@aws-sdk/client-dynamodb");
-const {marshall, unmarshall} = require("@aws-sdk/util-dynamodb");
-const {getSignedUrl} = require("@aws-sdk/s3-request-presigner");
-
-
-const fs = require('fs');
-const REGION = "us-east-2"; // Set the AWS Region. e.g. "us-east-1"
+const {uploadImageToS3, getImageUrlFromS3} = require("./serverUtil/s3");
+const {putItemInDatabase, updateItemInDatabase} = require("./serverUtil/dynamo");
 const {v4: uuidV4} = require('uuid')
 const devMode = process.env.NODE_ENV === 'development';
 
@@ -53,13 +41,8 @@ app.get('/', (req, res) => {
 	res.sendFile(path);
 });
 
-app.get('/public-keys', (req, res) => {
-	res.send({key: process.env.STRIPE_PUBLISHABLE_KEY});
-});
-
 app.get('/config', async (req, res) => {
 	const price = await stripe.prices.retrieve(process.env.PRICE);
-
 	res.send({
 		publicKey: process.env.STRIPE_PUBLISHABLE_KEY,
 		unitAmount: price.unit_amount,
@@ -162,7 +145,6 @@ app.post('/webhook', async (req, res) => {
 	if (eventType === 'checkout.session.completed') {
 		console.log(`🔔  Payment received!`);
 		sendEmail(data);
-		//TODO #1 store data in database about the user
 		//TODO #2 slack notify the artist
 
 
@@ -226,165 +208,6 @@ function checkEnv() {
 		process.exit(0);
 	}
 }
-
-//let let contacts = new Map()
-// contacts.set('Jessie', {phone: "213-555-1234", address: "123 N 1st Ave"})
-// contacts.has('Jessie') // true
-// contacts.get('Hilary') // undefined
-// contacts.set('Hilary', {phone: "617-555-4321", address: "321 S 2nd St"})
-// contacts.get('Jessie') // {phone: "213-555-1234", address: "123 N 1st Ave"}
-// contacts.delete('Raymond') // false
-// contacts.delete('Jessie') // true
-// console.log(contacts.size) // 1
-/**
- *
- * @param uuid customer_id
- * @param items map of keys that need updating
- * @returns {Promise<void>}
- */
-async function updateItemInDatabase(uuid, items) {
-	if (items.size === 0) return; //do nothing if map is empty
-	let updateExpression = "SET ";
-	let updateValues = {}
-	// for (const [key, value] of items) {
-	// 	console.log("key", key, "value", value);
-	// 	switch (key) {
-	// 		case "renditions":
-	// 			updateExpression += "renditions = renditions + :renditions, ";
-	// 			updateValues[":renditions"] = value;
-	// 			break;
-	// 		case "feedback":
-	// 			updateExpression += "feedback = list_append(feedback, :feedback), ";
-	// 			updateValues[":feedback"] = value;
-	// 			break;
-	// 	}
-	// }
-	console.log("items", items);
-	const keys = Object.keys(items);
-	for(let i = 0; i < keys.length; i++){
-		//inserting new key value pair inside map
-		// map.set(keys[i], obj[keys[i]]);
-		switch (keys[i]) {
-			case "renditions":
-				updateExpression += "renditions = renditions + :renditions, ";
-				updateValues[":renditions"] = 1;
-				break;
-			case "feedback":
-				updateExpression += "feedback = list_append(feedback, :feedback), ";
-				updateValues[":feedback"] = [items[keys[i]]]; //turns value in items[key[i]] into a list
-				break;
-		}
-	};
-
-	updateExpression += "updated_at = :update_time";
-	updateValues[":update_time"] =	new Date(Date.now()).toString();
-
-	console.log("update expression: ", updateExpression);
-	console.log("update values: ", updateValues);
-	//EXAMPLE OF PARAMS WHERE YOU INCREMENT RENDITIONS, APPEND A STRING TO A LIST, AND UPDATE A VALUE
-	// const params = {
-	// 	TableName: "orders",
-	// 	Key: marshall({
-	// 		customer_id: uuid
-	// 	}),
-	// 	UpdateExpression: "SET renditions = renditions + :renditions, feedback = list_append(feedback, :feedback), updated_at = :update_time",
-	// 	ExpressionAttributeValues: marshall({
-	// 		":renditions": 1,
-	// 		":feedback": ["new feedback"],
-	// 		":update_time": new Date(Date.now()).toString(),
-	// 	})
-	// };
-
-	const params = {
-		TableName: "orders",
-		Key: marshall({
-			customer_id: uuid
-		}),
-		UpdateExpression: updateExpression,
-		ExpressionAttributeValues: marshall(updateValues)
-	};
-
-	const client = new DynamoDBClient({region: REGION});
-
-	try {
-		const data = await client.send(new UpdateItemCommand(params));
-		console.log("Success - updated", data);
-	} catch (err) {
-		console.log("Error", err);
-	}
-}
-
-async function putItemInDatabase(data) {
-	// Set the parameters
-	const params = {
-		TableName: "orders",
-		Item: marshall(data),
-	};
-
-// Create DynamoDB service object
-	const dbclient = new DynamoDBClient({region: REGION});
-
-	try {
-		const data = await dbclient.send(new PutItemCommand(params));
-		console.log("success");
-		console.log(data);
-	} catch (err) {
-		console.error(err);
-	}
-}
-
-async function getImageUrlFromS3(uuid, type) {
-	let imageParams = {
-		Bucket: "mymojibucket",
-		Key: "",
-	}
-	if (type === "INITIAL_UPLOAD") {
-		imageParams.Key = uuid + "/initialUpload.png";
-	} else if (type === "RENDITION") {
-		imageParams.Key = uuid + ""; //insert some other path to the rendition photo
-	}
-
-	const s3 = new S3Client({region: REGION});
-
-	try {
-		// Create the command.
-		const command = new GetObjectCommand(imageParams);
-
-		// Create the presigned URL.
-		const signedUrl = await getSignedUrl(s3, command, {
-			expiresIn: 3600,
-		});
-		console.log(`\nGetting "${imageParams.Key}" using signedUrl in v3`);
-		console.log(signedUrl);
-
-		return ({"signed": signedUrl, "potatoe": "i spelled that wrong"});
-	} catch (err) {
-		console.log("Error creating presigned URL", err);
-	}
-}
-
-async function uploadImageToS3(file, uuid) {
-	let imageParams = {
-		Bucket: "mymojibucket",
-		Key: uuid + "/initialUpload.png",
-		ContentType: "image/png",
-		// Body: file //DOES NOT WORK
-		Body: file.buffer
-		// Body: fs.createReadStream(body.file) //DOES NOT WORK
-	};
-
-	// Create an Amazon S3 service client object.
-	const s3 = new S3Client({region: REGION});
-	try {
-		await s3.send(new PutObjectCommand(imageParams));
-		console.log("Image uploaded Successfully");
-	} catch (err) {
-		console.log("Error", err);
-
-	}
-
-}
-
 
 //LEAVE THIS AT THE END OF THE FILE -- OPENS THE PORT TO LISTEN TO INCOMING REQUESTS
 let port = process.env.PORT || 4242;
