@@ -1,79 +1,73 @@
 <!DOCTYPE html>
 <html class="no-js" lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<title>Order</title>
-		<link rel="stylesheet" href="css/normalize.css" />
-		<link rel="stylesheet" href="css/main.css" />
-		<link rel="stylesheet" href="css/style.css" />
-		<link rel="stylesheet" href="css/largerScreen.css" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" />
-		<link
-			href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;1,300;1,400&display=swap"
-			rel="stylesheet"
-		/>
-		<meta name="theme-color" content="#fafafa" />
-	</head>
-	<body>
-		<script src="js/vendor/modernizr-3.11.2.min.js"></script>
-		<script src="js/plugins.js"></script>
-		<script src="js/main.js"></script>
-
-		<!--navigation-->
-		<nav class="navigation">
-			<!--	navigation wrap-->
-			<div class="navigation-wrap">
-				<!--		logo link-->
-				<a href="/" class="logo">
-					<img class="logo-image" src="img/Logo@2x.png" alt="LOGO" />
-				</a>
-				<!--		navigation items-->
-				<ul>
-					<li><a href="#">About Us</a></li>
-					<li><a href="#">Contact</a></li>
-				</ul>
-			</div>
-		</nav>
-		<section class="section">
-			<p class="heading-jumbo">Hooray! Your MyMoji is now in progress.</p>
-			<p class="paragraph-bigger">
-				Our artists will get to work right away. We'll email you when
-				your MyMoji is ready (expect to hear back from us within 24-48
-				hours). We think you'll love it, but once you receive your
-				MyMoji you'll also be able to request any changes you think will
-				make it that much better.
-			</p>
-			<p class="work-heading" style="text-align: left">
-				Here's your order number:
-			</p>
-			<p id="order-number" style="font-style: italic"></p>
-			<p class="paragraph-bigger">
-				If you have any questions you can reach us at contact@mymoji.com
-			</p>
-			<img class="preview-image" src="#" id="order-image-test" alt="" />
-			<!-- <a href="mailto:contact@mymoji.com">here</a> -->
-		</section>
-		<script charset="UTF-8">
-			// gets the query and example of getting a query object
-			const queryString = window.location.search;
-			console.log(queryString);
-			const urlParams = new URLSearchParams(queryString);
-			const sessionID = urlParams.get("session_id");
-			console.log(sessionID);
-			const uuid = urlParams.get("uuid");
-			console.log("uuid query", uuid);
-			fetch("/photo/" + uuid + "/INITIAL_UPLOAD")
-				.then((response) => response.json())
-				.then((data) => {
-					console.log("data", data);
-					console.log("data", data.signed);
-					console.log("data", data.potatoe);
-					document.getElementById("order-image-test").src =
-						data.signed;
-				})
-				.catch((error) => {
-					console.error("Error: ", error);
-				});
-		</script>
-	</body>
+<head>
+	<meta charset="UTF-8"/>
+	<title>Order</title>
+	<link rel="stylesheet" href="css/normalize.css"/>
+	<link rel="stylesheet" href="css/main.css"/>
+	<link rel="stylesheet" href="css/style.css"/>
+	<link rel="stylesheet" href="css/largerScreen.css"/>
+	<link rel="preconnect" href="https://fonts.gstatic.com"/>
+	<link
+		href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;1,300;1,400&display=swap"
+		rel="stylesheet"
+	/>
+	<meta name="theme-color" content="#fafafa"/>
+</head>
+<body>
+<nav class="navigation">
+	<div class="navigation-wrap">
+		<img class="logo-image" src="img/Logo@2x.png" alt="LOGO"/>
+		<ul>
+			<li><a href="#">About Us</a></li>
+			<li><a href="#">Contact</a></li>
+		</ul>
+	</div>
+</nav>
+<section class="section">
+	<p class="heading-jumbo">Hooray! Your MyMoji is now in progress.</p>
+	<p class="paragraph-bigger">
+		Our artists will get to work right away. We'll email you when
+		your MyMoji is ready (expect to hear back from us within 24-48
+		hours). We think you'll love it, but once you receive your
+		MyMoji you'll also be able to request any changes you think will
+		make it that much better.
+	</p>
+	<p class="work-heading" style="text-align: left">
+		Here's your order number:
+	</p>
+	<p id="order-number" style="font-style: italic"></p>
+	<p class="paragraph-bigger">
+		If you have any questions you can reach us at contact@mymoji.com
+	</p>
+	<img class="preview-image" src="#" id="order-image-test" alt=""/>
+	<!-- <a href="mailto:contact@mymoji.com">here</a> -->
+</section>
+<script src="js/vendor/modernizr-3.11.2.min.js"></script>
+<script src="js/plugins.js"></script>
+<script src="js/main.js"></script>
+<script charset="UTF-8">
+	// gets the query and example of getting a query object
+	const queryString = window.location.search;
+	console.log(queryString);
+	const urlParams = new URLSearchParams(queryString);
+	const sessionID = urlParams.get("session_id");
+	console.log(sessionID);
+	const uuid = urlParams.get("uuid");
+	console.log("uuid query", uuid);
+	document.getElementById("order-number").innerHTML = uuid;
+	fetch("/photo/" + uuid + "/INITIAL_UPLOAD")
+		.then((response) => response.json())
+		.then((data) => {
+			console.log("data", data);
+			console.log("data", data.signed);
+			console.log("data", data.potatoe);
+			document.getElementById("order-image-test").src =
+				data.signed;
+		})
+		.catch((error) => {
+			console.error("Error: ", error);
+		});
+</script>
+</body>
 </html>
