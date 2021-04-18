@@ -6,8 +6,8 @@
 	"license": "",
 	"author": "",
 	"scripts": {
-		"build": "parcel build index.html",
-		"dev": "parcel index.html --open",
+		"build": "parcel build views/pages/index.ejs",
+		"dev": "parcel views/pages/index.ejs --open",
 		"start": "node server.js",
 		"test": "cross-env NODE_ENV=development node server.js"
 	},

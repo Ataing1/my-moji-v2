@@ -24,6 +24,7 @@ if (devMode) {
 checkEnv(); //check if price environmental variable is set for STRIPE
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY); //init stripe
 
+app.set('view engine', 'ejs');
 app.use(express.static(process.env.STATIC_DIR));
 app.use(express.json({
 		// We need the raw body to verify webhook signatures.
@@ -36,9 +37,26 @@ app.use(express.json({
 	})
 );
 
+//EXAMPLE OF MIDDLEWARE as template for future middleware if needed. sets active property to head of path.
+// app.use(function(req, res, next){
+// 	req.active = req.path.split('/')[1] // [0] will be empty since routes start with '/'
+// 	next();
+// });
+
 app.get('/', (req, res) => {
-	const path = resolve(process.env.STATIC_DIR + '/index.html');
-	res.sendFile(path);
+	res.render('pages/index', {active: ""} );
+});
+
+app.get('/newOrder', (req, res) => {
+	res.render('pages/newOrder' );
+});
+
+app.get('/successfulOrder', (req, res) => {
+	res.render('pages/successfulOrder'  );
+});
+
+app.get('/success', (req, res) => {
+	res.render('pages/viewOrder'  );
 });
 
 app.get('/config', async (req, res) => {
@@ -83,8 +101,8 @@ app.post('/create-checkout-session', upload.single('upload'), async (req, res) =
 		},
 
 		// ?session_id={CHECKOUT_SESSION_ID} means the redirect will have the session ID set as a query param
-		success_url: `${domainURL}/success.html?session_id={CHECKOUT_SESSION_ID}&uuid=` + uuid,
-		cancel_url: `${domainURL}/newOrder.html`,
+		success_url: `${domainURL}/successfulOrder?session_id={CHECKOUT_SESSION_ID}&uuid=` + uuid,
+		cancel_url: `${domainURL}/newOrder`,
 	});
 	await uploadImageToS3(req.file, uuid);
 	//add sessionID to database object and add object to database.

@@ -13,30 +13,14 @@
 	<meta property="og:image" content=""/>
 
 	<link rel="manifest" href="site.webmanifest"/>
-	<link rel="apple-touch-icon" href="icon.png"/>
+	<link rel="apple-touch-icon" href="../../icon.png"/>
 	<!-- Place favicon.ico in the root directory -->
 
-	<link rel="stylesheet" href="css/normalize.css"/>
-	<link rel="stylesheet" href="css/main.css"/>
-	<link rel="stylesheet" href="css/style.css"/>
-	<link rel="stylesheet" href="css/largerScreen.css"/>
-	<link rel="preconnect" href="https://fonts.gstatic.com"/>
-	<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;1,300;1,400&display=swap"
-		  rel="stylesheet"/>
-
-	<meta name="theme-color" content="#fafafa"/>
+	<%- include('../partials/head');%>
 </head>
 
 <body>
-<nav class="navigation">
-	<div class="navigation-wrap">
-		<img class="logo-image" src="img/Logo@2x.png" alt="LOGO"/>
-		<ul>
-			<li><a href="#">About Us</a></li>
-			<li><a href="#">Contact</a></li>
-		</ul>
-	</div>
-</nav>
+<%- include('../partials/header'); %>
 
 
 <!--section-->
@@ -56,7 +40,7 @@
 						group with a customized, professional cartoon
 						drawing
 					</p>
-					<button id="section1button" onclick="location.href='newOrder.html';">
+					<button id="section1button" onclick="location.href='/newOrder';">
 						Create Your Own
 					</button>
 				</div>
@@ -66,7 +50,7 @@
 				<!--				</button>-->
 			</div>
 			<!--			TODO add stuff to css so that the image resizes properly depending on screen size.make the image go under the text, if the  screen is too small -->
-			<img class="steve-img" src="img/steve.png" alt="icon"/>
+			<img class="steve-img" src="../../img/steve.png" alt="icon"/>
 		</div>
 		<!--        intro content-->
 	</div>
@@ -86,7 +70,7 @@
 			<div class="collection-wrap">
 				<!--				instruction wrap-->
 				<div class="instruction-wrap">
-					<img class="instruction-img" src="img/photo-camera@2x.png" alt="icon"/>
+					<img class="instruction-img" src="../../img/photo-camera@2x.png" alt="icon"/>
 					<p class="instruction-title">UPLOAD YOUR PHOTO</p>
 					<p class="instruction-description">
 						Send us an in-focus, well-lit photo. The artists
@@ -95,7 +79,7 @@
 					</p>
 				</div>
 				<div class="instruction-wrap">
-					<img class="instruction-img" src="img/photos@2x.png" alt="icon"/>
+					<img class="instruction-img" src="../../img/photos@2x.png" alt="icon"/>
 					<p class="instruction-title">APPROVE YOUR DRAFT</p>
 					<p class="instruction-description">
 						Customers are often surprised how good the first
@@ -104,7 +88,7 @@
 					</p>
 				</div>
 				<div class="instruction-wrap">
-					<img class="instruction-img" src="img/lover@2x.png" alt="icon"/>
+					<img class="instruction-img" src="../../img/lover@2x.png" alt="icon"/>
 					<p class="instruction-title">ENJOY YOUR MYMOJI</p>
 					<p class="instruction-description">
 						Put it on Slack. Order stickers from
@@ -115,7 +99,7 @@
 				</div>
 			</div>
 		</div>
-		<button id="section2button" onclick="location.href='newOrder.html';">
+		<button id="section2button" onclick="location.href='/newOrder';">
 			CREATE YOUR MYMOJI
 		</button>
 	</div>
@@ -137,7 +121,7 @@
 			<div class="collection-wrap">
 				<!--				instruction wrap-->
 				<div class="instruction-wrap">
-					<img class="instruction-img" src="img/Testimonial_Buddy_WithBefore@2x.png" alt="icon"/>
+					<img class="instruction-img" src="../../img/Testimonial_Buddy_WithBefore@2x.png" alt="icon"/>
 
 					<p class="testimonial">
 						I love my MyMoji. It's great to share with
@@ -146,7 +130,7 @@
 					<p class="testimonial-credit">Buddy</p>
 				</div>
 				<div class="instruction-wrap">
-					<img class="instruction-img" src="img/Testimonial_Cameron_WithBefore@2x.png" alt="icon"/>
+					<img class="instruction-img" src="../../img/Testimonial_Cameron_WithBefore@2x.png" alt="icon"/>
 
 					<p class="testimonial">
 						I love the MyMoji of my son Cameron. We use it
@@ -156,7 +140,7 @@
 					<p class="testimonial-credit">Sunny</p>
 				</div>
 				<div class="instruction-wrap">
-					<img class="instruction-img" src="img/Testimonial_Adam_WithBefore@2x.png" alt="icon"/>
+					<img class="instruction-img" src="../../img/Testimonial_Adam_WithBefore@2x.png" alt="icon"/>
 
 					<p class="testimonial">
 						MyMoji looks great at any size! Now I’ve got an
@@ -167,15 +151,15 @@
 				</div>
 			</div>
 		</div>
-		<button id="section3button" onclick="location.href='newOrder.html';">
+		<button id="section3button" onclick="location.href='/newOrder';">
 			GET STARTED
 		</button>
 	</div>
 </section>
 
-<script src="js/vendor/modernizr-3.11.2.min.js"></script>
-<script src="js/plugins.js"></script>
-<script src="js/main.js"></script>
+<script src="../../js/vendor/modernizr-3.11.2.min.js"></script>
+<script src="../../js/plugins.js"></script>
+<script src="../../js/main.js"></script>
 
 <!-- Google Analytics: change UA-XXXXX-Y to be your site's ID. -->
 <script>
