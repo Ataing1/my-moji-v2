@@ -4,26 +4,11 @@
 <head>
 	<meta charset="UTF-8">
 	<title>New Order</title>
-	<link rel="stylesheet" href="css/normalize.css">
-	<link rel="stylesheet" href="css/main.css">
-	<link rel="stylesheet" href="css/style.css">
-	<link rel="stylesheet" href="css/largerScreen.css">
-	<link rel="preconnect" href="https://fonts.gstatic.com">
-	<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;1,300;1,400&display=swap"
-		  rel="stylesheet">
-	<meta name="theme-color" content="#fafafa">
+	<%- include('../partials/head');%>
 </head>
 
 <body>
-<nav class="navigation">
-	<div class="navigation-wrap">
-		<img class="logo-image" src="img/Logo@2x.png" alt="LOGO"/>
-		<ul>
-			<li><a href="#">About Us</a></li>
-			<li><a href="#">Contact</a></li>
-		</ul>
-	</div>
-</nav>
+<%- include('../partials/header'); %>
 
 <section class="section">
 	<div class="container">
@@ -64,9 +49,9 @@
 
 
 </section>
-<script src="js/vendor/modernizr-3.11.2.min.js"></script>
-<script src="js/plugins.js"></script>
-<script src="js/main.js"></script>
+<script src="../../js/vendor/modernizr-3.11.2.min.js"></script>
+<script src="../../js/plugins.js"></script>
+<script src="../../js/main.js"></script>
 
 <script src="https://js.stripe.com/v3/"></script>
 <script charset="UTF-8">
