@@ -94,7 +94,7 @@ app.post('/create-checkout-session', upload.single('upload'), async (req, res) =
 				quantity: 1
 			},
 		],
-		metadata: {
+		metadata: { //use  to match data with database
 			name: req.body.name,
 			email: req.body.email,
 			uuid: req.body.uuid,
