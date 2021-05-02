@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Order</title>
+    <%- include('../partials/head'); %>
+
+</head>
+<body>
+<%- include('../partials/header'); %>
+<!--rendition image-->
+<!--"what would you like to tell the artist?-->
+<!--textbox-->
+<img class="steve-img" id="order-rendition" src=<%= renditionURL %> alt="icon"/>
+<p class="paragraph-bigger">What would you like to tell the artist?</p>
+<label class="label" for="other-information"></label>
+<textarea id="other-information" type="text" class="text-field" rows="4" cols="50"></textarea>
+<button class="button blue" id="submit">Submit</button>
+<script charset="UTF-8">
+
+    let checkoutButton = document.getElementById("submit");
+	checkoutButton.addEventListener('click', function (e) {
+
+		e.preventDefault();
+
+		let formData = new FormData();
+		const feedback = document.getElementById("other-information");
+
+		formData.append("feedback", feedback.value);
+		const queryString = window.location.search;
+		const urlParams = new URLSearchParams(queryString);
+		const uuid = urlParams.get("uuid");
+		console.log("uuid query", uuid);
+
+		fetch('/feedback/' + uuid, {
+			method: 'POST',
+			body: formData
+
+		})
+			.then(function (response) {
+				console.log(response);
+				return response.json();
+			})
+			.catch(function (error) {
+				console.error('Error:', error);
+			});
+	});
+</script>
+</body>

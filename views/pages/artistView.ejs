@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Order</title>
+    <%- include('../partials/head'); %>
+
+</head>
+<body>
+<%- include('../partials/header'); %>
+<section class="section">
+    <p class=paragraph-bigger>Order ID: <%= orderID %></p>
+    <p class="paragraph-bigger">Customer Notes: <%= item.notes %></p>
+    <section class="section">
+        <!--    intro header-->
+        <div class="intro-header">
+
+            <div class="content-image-wrapper">
+                <div class="content-image-wrapper">
+                    <img class="steve-img" id="order-rendition" src=<%= originalURL %> alt="icon"/>
+                    <div class="intro-content">
+                        <!--            intro text -->
+                        <div class="intro-text">
+                            <div>
+                                <p>Select Emoji</p>
+                                <img class="preview-image" src="#" id="blah" alt="">
+                                <label for="image-upload" class="image-upload-button">Select File</label>
+                                <input type="file" name="upload" id="image-upload"
+                                       accept="image/*"
+                                       placeholder="Select File" required
+                                       onchange="return validateFileUpload()">
+                            </div>
+                            <button class="button blue" id="upload-rendition">Upload</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</section>
+<% if (item.renditions.length > 0){ %>
+    <ul class="repos">
+        <% renditionArray.forEach(function(rendition) { %>
+        <li class="content-image-wrapper">
+<!--            change to grid layout and share space evenly between the two-->
+            <img class="steve-img" id="order-rendition" src=<%= rendition.url %>  alt="icon">
+            <p class="rendition-description">Feedback: <%=rendition.feedback%></p>
+        </li>
+        <% })%>
+    </ul>
+<% }else{ %>
+    <p class="paragraph-bigger" style="text-align: center">Upload your first Emoji</p>
+<% } %>
+<script charset="UTF-8">
+
+	let uploadButton = document.getElementById('upload-rendition');
+
+	uploadButton.addEventListener('click', function (e) {
+		if (!validateFileUpload()) {
+			console.log("input invalid returning");
+			return;
+		}else{
+			console.log('input valid continuing to fetch');
+		}
+		e.preventDefault();
+
+		let formData = new FormData();
+		let fuData = document.getElementById('image-upload');
+
+		formData.append("upload", fuData.files[0]);
+		formData.append("renditionCount", "<%-item.renditions.length%>");
+
+        //same as customer_id same as uuid
+		fetch('/rendition/' + '<%-item.customer_id%>', {
+			method: 'POST',
+			body: formData
+		})
+			.then(function (response) {
+				console.log(response);
+				return response.json();
+			})
+			.catch(function (error) {
+				console.error('Error:', error);
+			});
+	});
+
+
+
+</script>
+
+<script src="../../js/vendor/modernizr-3.11.2.min.js"></script>
+<script src="../../js/plugins.js"></script>
+<script src="../../js/main.js"></script>
+
+<!--TODO IMPLEMENT RENDITION UPLOAD and TEST EJS PARTIALS-->
+</body>
+</html>

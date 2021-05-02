@@ -1,13 +1,14 @@
 const express = require('express');
 const app = express();
-const {resolve} = require('path');
 app.use(express.json());
 const multer = require('multer');
 const upload = multer();
 const {uploadImageToS3, getImageUrlFromS3} = require("./serverUtil/s3");
-const {putItemInDatabase, updateItemInDatabase} = require("./serverUtil/dynamo");
+const {putItemInDatabase, updateItemInDatabase, getDynamoItem} = require("./serverUtil/dynamo");
 const {v4: uuidV4} = require('uuid')
 const devMode = process.env.NODE_ENV === 'development';
+const INITIAL_UPLOAD = "initial-upload";
+//USE GLOBAL VARIABLES SPARINGLY
 
 //development mode uses DOTENV to load a .env file which contains the environmental variables. Access via process.env
 if (devMode) {
@@ -44,20 +45,76 @@ app.use(express.json({
 // });
 
 app.get('/', (req, res) => {
-	res.render('pages/index', {active: ""} );
+	res.render('pages/index', {active: ""});
 });
-
 app.get('/newOrder', (req, res) => {
-	res.render('pages/newOrder' );
+	res.render('pages/newOrder');
 });
-
 app.get('/successfulOrder', (req, res) => {
-	res.render('pages/successfulOrder'  );
+	res.render('pages/successfulOrder');
+});
+app.get('/viewOrder/:uuid', async (req, res) => {
+	// send name, intro line, mugshot link, rendition link or status no rendition yet
+	//TODO redirect to download page if status is complete
+	//http://expressjs.com/de/api.html#res.redirect
+
+	const item = await getDynamoItem("abc123");
+	let original = await getImageUrlFromS3(req.params.uuid, INITIAL_UPLOAD);
+	let renditionURL = "";
+	let introLine = "your MyMoji is now in progress.";
+	if (item.rendition_status !== "pending-rendition") {
+		const renditionObject = await getImageUrlFromS3(req.params.uuid, item.renditions[0].name);
+		renditionURL = renditionObject.signed;
+		introLine = "Your Mymoji is Ready!"
+	}
+	console.log("rendering", {
+		item: item,
+		introLine: introLine,
+		originalURL: original.signed,
+		renditionURL: renditionURL,
+	})
+	res.render("pages/viewOrder", {
+		item: item,
+		introLine: introLine,
+		originalURL: original.signed,
+		renditionURL: renditionURL,
+	})
 });
 
-app.get('/success', (req, res) => {
-	res.render('pages/viewOrder'  );
+app.get('/artistView/:uuid', async (req, res) => {
+	const item = await getDynamoItem("abc123");
+	let original = await getImageUrlFromS3(req.params.uuid, INITIAL_UPLOAD);
+	//load the last 5 renditions and current
+	//the first feedback could be pending, so we do a check only for the latest rendition, all others should have a corresponding feedback
+
+	//shape of renditions array:[{name: "rendition-1", feedback: "awaiting user feedback"}]
+	let renditionArray = [];
+	for(let i = 0;i<item.renditions.length;i++){
+		const rendition = await getImageUrlFromS3(req.params.uuid, item.renditions[i].name);
+		renditionArray[i] = {url: rendition.signed, feedback: item.renditions[i].feedback};
+	}
+	res.render("pages/artistView", {
+		orderID: req.params.uuid,
+		item: item,
+		originalURL: original.signed,
+		renditionArray: renditionArray,
+	})
 });
+
+app.get('/downloadView/:uuid', async (req, res)=>{
+	res.render("pages/download");
+});
+
+app.get('/feedbackView/:uuid', async (req, res)=>{
+	//send latest rendition url to display
+	const item = await getDynamoItem("abc123");
+	const renditionObject = await getImageUrlFromS3(req.params.uuid, item.renditions[0].name);
+	const renditionURL = renditionObject.signed;
+
+	res.render("pages/feedback", {renditionURL: renditionURL});
+});
+
+
 
 app.get('/config', async (req, res) => {
 	const price = await stripe.prices.retrieve(process.env.PRICE);
@@ -104,7 +161,7 @@ app.post('/create-checkout-session', upload.single('upload'), async (req, res) =
 		success_url: `${domainURL}/successfulOrder?session_id={CHECKOUT_SESSION_ID}&uuid=` + uuid,
 		cancel_url: `${domainURL}/newOrder`,
 	});
-	await uploadImageToS3(req.file, uuid);
+	await uploadImageToS3(INITIAL_UPLOAD, req.file, uuid);
 	//add sessionID to database object and add object to database.
 	//add date created with date.now
 	let newOrder = {
@@ -116,10 +173,10 @@ app.post('/create-checkout-session', upload.single('upload'), async (req, res) =
 		created_at: new Date(Date.now()).toString(),
 		updated_at: new Date(Date.now()).toString(),
 		status: "pending-rendition",
-		feedback: [],
-		renditions: 0
+		renditions: [],
 
 	}
+	//renditions {"rendtion_0": "feedback"}
 	await putItemInDatabase(newOrder);
 
 	res.send({
@@ -174,22 +231,43 @@ app.post('/webhook', async (req, res) => {
 /**
  * gets image url from s3 database
  * uuid/type.png
- * type - "INITAL UPLOAD, RENDITION, ..."
+ * type - "INITAL_UPLOAD, RENDITION, ..."
  */
-app.get('/photo/:uuid/:type', async (req, res) => {
+app.get('/photo/:uuid/:name', async (req, res) => {
 	console.log("uuid: ", req.params.uuid);
-	console.log("uuid: ", req.params.type);
-	const data = await getImageUrlFromS3(req.params.uuid, req.params.type);
+	console.log("name: ", req.params.name);
+
+	const data = await getImageUrlFromS3(req.params.uuid, req.params.name);
 	res.send(data);
 })
 
-app.post('/testing/:uuid',upload.none(), async (req, res) => {
-	//loop through req.body, and set it to map
-	console.log("testing called");
-	// {renditions: 1, feedback: ["this is another one"]}
-	const data = await updateItemInDatabase(req.params.uuid,req.body);
+
+
+
+app.post('/rendition/:uuid', upload.single('upload'), async(req, res)=>{
+	console.log("uploading new rendition");
+	console.log("req.body", req.body);
+	console.log("req.file", req.file);
+	const {renditionCount} = req.body;
+	const newRenditionObject = {
+		name: "rendition_" + renditionCount,
+		feedback: "null"
+	}
+	await uploadImageToS3(newRenditionObject.name, req.file, req.params.uuid);
+	const data = await updateItemInDatabase(req.params.uuid, {rendition: newRenditionObject});
+	res.send(data);
+
+})
+
+app.post('/feedback/:uuid', upload.none(), async (req, res)=>{
+	console.log("uploading user feedback");
+	console.log("req.body", req.body);
+	const {feedback} = req.body;
+	const data = await updateItemInDatabase(req.params.uuid, {feedback: feedback});
 	res.send(data);
 })
+
+
 
 
 function sendEmail(event) {
@@ -235,3 +313,24 @@ if (port == 4242) {
 } else {
 	app.listen(port, () => console.log('Live using port: ' + port));
 }
+/*
+let newOrder = {
+		customer_id: uuid,
+		name: req.body.name,
+		email: req.body.email,
+		notes: req.body.notes,
+		session_id: session.id,
+		created_at: new Date(Date.now()).toString(),
+		updated_at: new Date(Date.now()).toString(),
+		status: "pending-rendition",
+		renditions: {
+			rendition_0: {
+			},
+			rendition_1: {
+			},
+			rendition_2:{
+			},
+		},
+
+	}
+ */

@@ -49,6 +49,9 @@ li a:hover {
 	color: lightblue;
 }
 
+body{
+	font-family: 'Montserrat', sans-serif;
+}
 
 .section {
 	margin-left: 0;
@@ -127,6 +130,24 @@ INTRO STYLING CSS
 	text-align: center;
 }
 
+.button{
+	display: block;
+	padding: 16px 35px;
+	font-family: 'Montserrat', sans-serif;
+	font-weight: bold;
+	font-size: 14px;
+	border-radius: 40px;
+	outline: none;
+	margin: 20px auto;
+}
+
+.blue{
+	background-color: dodgerblue;
+	color: white;
+}
+
+
+
 #section1button {
 	display: block;
 	padding: 16px 35px;
@@ -142,6 +163,7 @@ INTRO STYLING CSS
 	margin: 0 20px;
 	max-width: 100%;
 	height: auto;
+
 
 }
 
@@ -314,6 +336,8 @@ TESTIMONIAL SECTION CSS
 	margin-bottom: 100px;
 }
 
+
+
 /*
 
 	NEW ORDER CSS
@@ -429,6 +453,9 @@ TESTIMONIAL SECTION CSS
 	margin-bottom: 25px;
 }
 
+input[type="file"] {
+	display: none;
+}
 
 
 

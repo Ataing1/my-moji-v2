@@ -3,10 +3,10 @@ const {getSignedUrl} = require("@aws-sdk/s3-request-presigner");
 const REGION = "us-east-2"; // Set the AWS Region. e.g. "us-east-1"
 
 
-let uploadImageToS3 = async function uploadImageToS3(file, uuid) {
+let uploadImageToS3 = async function uploadImageToS3(name,file, uuid) {
 	let imageParams = {
 		Bucket: "mymojibucket",
-		Key: uuid + "/initialUpload.png",
+		Key: uuid + "/"+ name+".png",
 		ContentType: "image/png",
 		// Body: file //DOES NOT WORK
 		Body: file.buffer
@@ -23,16 +23,12 @@ let uploadImageToS3 = async function uploadImageToS3(file, uuid) {
 	}
 }
 
-let getImageUrlFromS3 = async function getImageUrlFromS3(uuid, type) {
+let getImageUrlFromS3 = async function getImageUrlFromS3(uuid, name) {
 	let imageParams = {
 		Bucket: "mymojibucket",
 		Key: "",
 	}
-	if (type === "INITIAL_UPLOAD") {
-		imageParams.Key = uuid + "/initialUpload.png";
-	} else if (type === "RENDITION") {
-		imageParams.Key = uuid + ""; //insert some other path to the rendition photo
-	}
+	imageParams.Key = uuid + "/" + name + ".png";
 
 	const s3 = new S3Client({region: REGION});
 
@@ -47,7 +43,7 @@ let getImageUrlFromS3 = async function getImageUrlFromS3(uuid, type) {
 		console.log(`\nGetting "${imageParams.Key}" using signedUrl in v3`);
 		console.log(signedUrl);
 
-		return ({"signed": signedUrl, "potatoe": "i spelled that wrong"});
+		return ({"signed": signedUrl});
 	} catch (err) {
 		console.log("Error creating presigned URL", err);
 	}
