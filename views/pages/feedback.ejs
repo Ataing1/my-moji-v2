@@ -16,6 +16,7 @@
 <label class="label" for="other-information"></label>
 <textarea id="other-information" type="text" class="text-field" rows="4" cols="50"></textarea>
 <button class="button blue" id="submit">Submit</button>
+
 <script charset="UTF-8">
 
     let checkoutButton = document.getElementById("submit");
@@ -27,18 +28,16 @@
 		const feedback = document.getElementById("other-information");
 
 		formData.append("feedback", feedback.value);
-		const queryString = window.location.search;
-		const urlParams = new URLSearchParams(queryString);
-		const uuid = urlParams.get("uuid");
-		console.log("uuid query", uuid);
 
-		fetch('/feedback/' + uuid, {
+
+		fetch('/feedback/' + "<%=uuid%>", {
 			method: 'POST',
 			body: formData
 
 		})
 			.then(function (response) {
 				console.log(response);
+				location.href = '/successfulFeedback/' + "<%=uuid%>"
 				return response.json();
 			})
 			.catch(function (error) {

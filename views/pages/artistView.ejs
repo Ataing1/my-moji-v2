@@ -11,16 +11,19 @@
 <section class="section">
     <p class=paragraph-bigger>Order ID: <%= orderID %></p>
     <p class="paragraph-bigger">Customer Notes: <%= item.notes %></p>
-    <section class="section">
-        <!--    intro header-->
-        <div class="intro-header">
 
+    <!--    intro header-->
+    <div class="intro-header">
+
+        <div class="content-image-wrapper">
             <div class="content-image-wrapper">
-                <div class="content-image-wrapper">
-                    <img class="steve-img" id="order-rendition" src=<%= originalURL %> alt="icon"/>
-                    <div class="intro-content">
-                        <!--            intro text -->
-                        <div class="intro-text">
+                <img class="steve-img" id="order-rendition" src=<%= originalURL %> alt="icon"/>
+                <div class="intro-content">
+                    <!--            intro text -->
+                    <div class="intro-text">
+                        <% if(item.rendtion_status === "pending-feedback"){ %>
+                            <p>Waiting for user feedback!</p>
+                        <% }else{ %>
                             <div>
                                 <p>Select Emoji</p>
                                 <img class="preview-image" src="#" id="blah" alt="">
@@ -30,27 +33,31 @@
                                        placeholder="Select File" required
                                        onchange="return validateFileUpload()">
                             </div>
-                            <button class="button blue" id="upload-rendition">Upload</button>
-                        </div>
+                        <% } %>
+
+                        <button class="button blue" id="upload-rendition">Upload</button>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+
 </section>
-<% if (item.renditions.length > 0){ %>
-    <ul class="repos">
-        <% renditionArray.forEach(function(rendition) { %>
-        <li class="content-image-wrapper">
-<!--            change to grid layout and share space evenly between the two-->
-            <img class="steve-img" id="order-rendition" src=<%= rendition.url %>  alt="icon">
-            <p class="rendition-description">Feedback: <%=rendition.feedback%></p>
-        </li>
-        <% })%>
-    </ul>
-<% }else{ %>
-    <p class="paragraph-bigger" style="text-align: center">Upload your first Emoji</p>
-<% } %>
+<section class="section">
+    <% if (item.renditions.length > 0){ %>
+        <ul class="grid-container">
+            <% renditionArray.forEach(function(rendition) { %>
+
+                <!--            change to grid layout and share space evenly between the two-->
+                <img class="steve-img grid-child" id="order-rendition" src=<%= rendition.url %>  alt="icon">
+                <p class="rendition-description grid-child">Feedback: <%= rendition.feedback %></p>
+
+            <% }) %>
+        </ul>
+    <% }else{ %>
+        <p class="paragraph-bigger" style="text-align: center">Upload your first Emoji</p>
+    <% } %>
+</section>
 <script charset="UTF-8">
 
 	let uploadButton = document.getElementById('upload-rendition');
@@ -59,7 +66,7 @@
 		if (!validateFileUpload()) {
 			console.log("input invalid returning");
 			return;
-		}else{
+		} else {
 			console.log('input valid continuing to fetch');
 		}
 		e.preventDefault();
@@ -68,10 +75,10 @@
 		let fuData = document.getElementById('image-upload');
 
 		formData.append("upload", fuData.files[0]);
-		formData.append("renditionCount", "<%-item.renditions.length%>");
-
-        //same as customer_id same as uuid
-		fetch('/rendition/' + '<%-item.customer_id%>', {
+		formData.append("renditionCount", "<%- item.renditions.length %>");
+        location.href
+		//same as customer_id same as uuid
+		fetch('/rendition/' + '<%- item.customer_id %>', {
 			method: 'POST',
 			body: formData
 		})
@@ -83,7 +90,6 @@
 				console.error('Error:', error);
 			});
 	});
-
 
 
 </script>

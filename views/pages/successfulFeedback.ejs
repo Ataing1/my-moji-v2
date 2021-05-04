@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Success!</title>
+    <%- include('../partials/head');%>
+</head>
+<body>
+<%- include('../partials/header'); %>
+<section class="section">
+    <p class="heading-jumbo">Hooray! Your feedback was received.</p>
+    <p class="paragraph-bigger">
+        Our artists will get to work right away. Expect an email with a link to access your freshly made Emoji within 24-48 hours.
+    </p>
+    <p class="work-heading" style="text-align: left">
+        Here's your order number:
+    </p>
+    <p id="order-number" style="font-style: italic"><%=uuid%></p>
+    <p class="paragraph-bigger">
+        If you have any questions you can reach us at contact@mymoji.com
+    </p>
+    <button class="button blue"  onclick="location.href='/feedbackView/'+ '<%=uuid%>';">Edit Feedback</button>
+
+    <!-- <a href="mailto:contact@mymoji.com">here</a> -->
+</section>
+<script src="../../js/vendor/modernizr-3.11.2.min.js"></script>
+<script src="../../js/plugins.js"></script>
+<script src="../../js/main.js"></script>
+</body>
+</html>

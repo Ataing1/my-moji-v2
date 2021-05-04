@@ -4,7 +4,7 @@ app.use(express.json());
 const multer = require('multer');
 const upload = multer();
 const {uploadImageToS3, getImageUrlFromS3} = require("./serverUtil/s3");
-const {putItemInDatabase, updateItemInDatabase, getDynamoItem} = require("./serverUtil/dynamo");
+const {putItemInDatabase, AddRenditionToDatabase,AddFeedbackToDatabase ,getDynamoItem} = require("./serverUtil/dynamo");
 const {v4: uuidV4} = require('uuid')
 const devMode = process.env.NODE_ENV === 'development';
 const INITIAL_UPLOAD = "initial-upload";
@@ -55,10 +55,13 @@ app.get('/successfulOrder', (req, res) => {
 });
 app.get('/viewOrder/:uuid', async (req, res) => {
 	// send name, intro line, mugshot link, rendition link or status no rendition yet
-	//TODO redirect to download page if status is complete
-	//http://expressjs.com/de/api.html#res.redirect
+
 
 	const item = await getDynamoItem("abc123");
+	if(item.rendition_status==="pending-rendition"){ //forward to pending screen to save image loads, and prevent user from inputting new feedback accidentally
+		res.redirect("/successfulFeedback/"+req.params.uuid);
+		return;
+	}
 	let original = await getImageUrlFromS3(req.params.uuid, INITIAL_UPLOAD);
 	let renditionURL = "";
 	let introLine = "your MyMoji is now in progress.";
@@ -105,13 +108,20 @@ app.get('/downloadView/:uuid', async (req, res)=>{
 	res.render("pages/download");
 });
 
+app.get('/successfulFeedback/:uuid', async (req, res)=>{
+	res.render("pages/successfulFeedback", {uuid: req.params.uuid});
+});
+
+
+
 app.get('/feedbackView/:uuid', async (req, res)=>{
 	//send latest rendition url to display
 	const item = await getDynamoItem("abc123");
+	//not preventing resubmissions so that the user can edit their feedback by pressing the back button
 	const renditionObject = await getImageUrlFromS3(req.params.uuid, item.renditions[0].name);
 	const renditionURL = renditionObject.signed;
 
-	res.render("pages/feedback", {renditionURL: renditionURL});
+	res.render("pages/feedback", {renditionURL: renditionURL, uuid: item.customer_id});
 });
 
 
@@ -248,13 +258,11 @@ app.post('/rendition/:uuid', upload.single('upload'), async(req, res)=>{
 	console.log("uploading new rendition");
 	console.log("req.body", req.body);
 	console.log("req.file", req.file);
-	const {renditionCount} = req.body;
-	const newRenditionObject = {
-		name: "rendition_" + renditionCount,
-		feedback: "null"
-	}
-	await uploadImageToS3(newRenditionObject.name, req.file, req.params.uuid);
-	const data = await updateItemInDatabase(req.params.uuid, {rendition: newRenditionObject});
+
+	const item = await getDynamoItem("abc123");
+	let filename = "rendition_" + item.renditions.length;
+	await uploadImageToS3(filename, req.file, req.params.uuid);
+	const data = await AddRenditionToDatabase(req.params.uuid, filename);
 	res.send(data);
 
 })
@@ -263,7 +271,7 @@ app.post('/feedback/:uuid', upload.none(), async (req, res)=>{
 	console.log("uploading user feedback");
 	console.log("req.body", req.body);
 	const {feedback} = req.body;
-	const data = await updateItemInDatabase(req.params.uuid, {feedback: feedback});
+	const data = await AddFeedbackToDatabase(req.params.uuid, feedback);
 	res.send(data);
 })
 

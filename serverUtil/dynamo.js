@@ -11,57 +11,72 @@ const TABLE_NAME = "orders";
 /**
  *
  * @param uuid customer_id
- * @param items map of keys that need updating
- * example of items
- * - to add a new rendition entry, items = {rendition: {name: _____, feedback: "null"}}
- * - to update feedback for latest entry = {feedback: __the string with the new feedback__ }
+ * @param file_name value of key "name" in new rendition object
  * @returns {Promise<void>}
  */
-let updateItemInDatabase = async function updateItemInDatabase(uuid, items) {
-	if (items.size === 0) return; //do nothing if map is empty
+let AddRenditionToDatabase = async function updateItemInDatabase(uuid, file_name) {
+
+	console.log(typeof (uuid), uuid, file_name);
+	let updateExpression = "SET ";
+	let updateValues = {};
+	let newRendition = {
+		name: file_name,
+		feedback: "null"
+	}
+	updateExpression += "renditions = list_append(:rendition, if_not_exists(renditions, :empty_list)), "; //append to the front of list
+	updateValues[":rendition"] = [newRendition]; //turns value in items[key[i]] into a list
+	updateValues[":empty_list"] = []
+	updateExpression += "rendition_status = :status, ";
+	updateValues[":status"] = "pending-feedback"
+	updateExpression += "updated_at = :updated_at";
+	updateValues[":updated_at"] = {"S": new Date(Date.now()).toString()};
+
+	//TODO unify status for update feedback and update rendition
+	const params = {
+		TableName: TABLE_NAME,
+		Key: {
+			customer_id: {"S": uuid}
+		},
+		UpdateExpression: updateExpression,
+		ExpressionAttributeValues: marshall(updateValues),
+
+	};
+	const client = new DynamoDBClient({region: REGION});
+	try {
+		const data = await client.send(new UpdateItemCommand(params));
+		console.log("Success - updated item in database", data);
+	} catch (err) {
+		console.log("Error", err);
+	}
+
+}
+
+let AddFeedbackToDatabase = async function updateItemInDatabase1(uuid, feedback) {
+	// testUpdate();
+	// return;
+	console.log(typeof (feedback), typeof (uuid), uuid, feedback);
 	let updateExpression = "SET ";
 	let updateValues = {};
 	let attributeNames = {};
-	console.log("items", items);
-	const keys = Object.keys(items);
-	for (let i = 0; i < keys.length; i++) {
-		//inserting new key value pair inside map
-		// map.set(keys[i], obj[keys[i]]);
-		switch (keys[i]) {
-			case "rendition":
-				updateExpression += "renditions = list_append(:rendition, if_not_exists(renditions, :empty_list)), "; //append to the front of list
-				updateValues[":rendition"] = [items[keys[i]]]; //turns value in items[key[i]] into a list
-				updateValues[":empty_list"] = []
-				updateExpression += "rendition_status = :status, ";
-				updateValues[":status"] = "pending-feedback"
-				break;
-			case "feedback":
-				updateExpression += "renditions[0].feedback = :feedback, ";
-				updateValues[":feedback"] = items[keys[i]]; //turns value in items[key[i]]
-				updateExpression += "rendition_status = :status, ";
-				updateValues[":status"] = "pending-rendition"
-				break;
-		}
-	}
-
-
-	updateExpression += "updated_at = :update_time";
-	updateValues[":update_time"] = new Date(Date.now()).toString();
-
-	console.log("update expression: ", updateExpression);
-	console.log("update values: ", updateValues);
-	console.log("attribute names", attributeNames);
-	//EXAMPLE OF PARAMS WHERE YOU INCREMENT RENDITIONS, APPEND A STRING TO A LIST, AND UPDATE A VALUE
-	// 	UpdateExpression: "SET renditions = renditions + :renditions, feedback = list_append(feedback, :feedback), updated_at = :update_time",
-	// 	ExpressionAttributeValues: marshall({":renditions": 1,":feedback": ["new feedback"],":update_time": new Date(Date.now()).toString(),})
+	updateExpression += "#renditions[0].feedback = :feedback";
+	updateValues[":feedback"] = {"S": feedback}; //turns value in items[key[i]]
+	attributeNames["#renditions"] = "renditions";
+	updateExpression += ", ";
+	updateExpression += "rendition_status = :status";
+	updateValues[":status"] = {"S": "pending-rendition"}; //turns value in items[key[i]]
+	updateExpression += ", ";
+	updateExpression += "#updated_at = :updated_at";
+	updateValues[":updated_at"] = {"S": new Date(Date.now()).toString()}; //turns value in items[key[i]]
+	attributeNames["#updated_at"] = "updated_at";
 
 	const params = {
 		TableName: TABLE_NAME,
-		Key: marshall({
-			customer_id: uuid
-		}),
+		Key: {
+			customer_id: {"S": uuid}
+		},
 		UpdateExpression: updateExpression,
-		ExpressionAttributeValues: marshall(updateValues),
+		ExpressionAttributeValues: updateValues,
+		ExpressionAttributeNames: attributeNames,
 
 	};
 	const client = new DynamoDBClient({region: REGION});
@@ -111,6 +126,8 @@ let getDynamoItem = async function getDynamoItem(uuid) {
 
 }
 
-module.exports.updateItemInDatabase = updateItemInDatabase;
+
+module.exports.AddRenditionToDatabase = AddRenditionToDatabase;
+module.exports.AddFeedbackToDatabase = AddFeedbackToDatabase;
 module.exports.putItemInDatabase = putItemInDatabase;
 module.exports.getDynamoItem = getDynamoItem;
