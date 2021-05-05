@@ -3,7 +3,7 @@ const {getSignedUrl} = require("@aws-sdk/s3-request-presigner");
 const REGION = "us-east-2"; // Set the AWS Region. e.g. "us-east-1"
 
 
-let uploadImageToS3 = async function uploadImageToS3(name,file, uuid) {
+async function uploadImageToS3(name,file, uuid) {
 	let imageParams = {
 		Bucket: "mymojibucket",
 		Key: uuid + "/"+ name+".png",
@@ -23,7 +23,7 @@ let uploadImageToS3 = async function uploadImageToS3(name,file, uuid) {
 	}
 }
 
-let getImageUrlFromS3 = async function getImageUrlFromS3(uuid, name) {
+async function getImageUrlFromS3(uuid, name) {
 	let imageParams = {
 		Bucket: "mymojibucket",
 		Key: "",
@@ -49,8 +49,11 @@ let getImageUrlFromS3 = async function getImageUrlFromS3(uuid, name) {
 	}
 }
 
-
-module.exports.uploadImageToS3 = uploadImageToS3;
-module.exports.getImageUrlFromS3 = getImageUrlFromS3;
+module.exports = {
+	uploadImageToS3,
+	getImageUrlFromS3,
+}
+// module.exports.uploadImageToS3 = uploadImageToS3;
+// module.exports.getImageUrlFromS3 = getImageUrlFromS3;
 
 

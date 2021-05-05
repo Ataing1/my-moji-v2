@@ -159,12 +159,15 @@ INTRO STYLING CSS
 	margin: 20px auto;
 }
 
-.steve-img {
+.full-image {
 	max-width: 100%;
 	height: auto;
-
-
 }
+
+.outline{
+	outline: #222222 1px solid;
+}
+
 
 /*
 

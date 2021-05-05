@@ -14,7 +14,7 @@ const TABLE_NAME = "orders";
  * @param file_name value of key "name" in new rendition object
  * @returns {Promise<void>}
  */
-let AddRenditionToDatabase = async function updateItemInDatabase(uuid, file_name) {
+async function AddRenditionToDatabase(uuid, file_name) {
 
 	console.log(typeof (uuid), uuid, file_name);
 	let updateExpression = "SET ";
@@ -51,7 +51,7 @@ let AddRenditionToDatabase = async function updateItemInDatabase(uuid, file_name
 
 }
 
-let AddFeedbackToDatabase = async function updateItemInDatabase1(uuid, feedback) {
+async function AddFeedbackToDatabase(uuid, feedback) {
 	// testUpdate();
 	// return;
 	console.log(typeof (feedback), typeof (uuid), uuid, feedback);
@@ -88,7 +88,7 @@ let AddFeedbackToDatabase = async function updateItemInDatabase1(uuid, feedback)
 	}
 }
 
-let putItemInDatabase = async function putItemInDatabase(data) {
+async function putItemInDatabase(data) {
 	// Set the parameters
 	const params = {
 		TableName: TABLE_NAME,
@@ -103,7 +103,7 @@ let putItemInDatabase = async function putItemInDatabase(data) {
 	}
 }
 
-let getDynamoItem = async function getDynamoItem(uuid) {
+async function getDynamoItem(uuid) {
 	console.log("get item", uuid);
 	const params = {
 		TableName: TABLE_NAME,
@@ -126,8 +126,13 @@ let getDynamoItem = async function getDynamoItem(uuid) {
 
 }
 
-
-module.exports.AddRenditionToDatabase = AddRenditionToDatabase;
-module.exports.AddFeedbackToDatabase = AddFeedbackToDatabase;
-module.exports.putItemInDatabase = putItemInDatabase;
-module.exports.getDynamoItem = getDynamoItem;
+module.exports = {
+	getDynamoItem,
+	putItemInDatabase,
+	AddRenditionToDatabase,
+	AddFeedbackToDatabase,
+}
+// module.exports.AddRenditionToDatabase = AddRenditionToDatabase;
+// module.exports.AddFeedbackToDatabase = AddFeedbackToDatabase;
+// module.exports.putItemInpDatabase = putItemInDatabase;
+// module.exports.getDynamoItem = getDynamoItem;

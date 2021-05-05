@@ -13,34 +13,32 @@
     <p class="paragraph-bigger">Customer Notes: <%= item.notes %></p>
 
     <!--    intro header-->
-    <div class="intro-header">
 
-        <div class="content-image-wrapper">
-            <div class="content-image-wrapper">
-                <img class="steve-img" id="order-rendition" src=<%= originalURL %> alt="icon"/>
-                <div class="intro-content">
-                    <!--            intro text -->
-                    <div class="intro-text">
-                        <% if(item.rendtion_status === "pending-feedback"){ %>
-                            <p>Waiting for user feedback!</p>
-                        <% }else{ %>
-                            <div>
-                                <p>Select Emoji</p>
-                                <img class="preview-image" src="#" id="blah" alt="">
-                                <label for="image-upload" class="image-upload-button">Select File</label>
-                                <input type="file" name="upload" id="image-upload"
-                                       accept="image/*"
-                                       placeholder="Select File" required
-                                       onchange="return validateFileUpload()">
-                            </div>
-                        <% } %>
 
-                        <button class="button blue" id="upload-rendition">Upload</button>
+    <div class="content-image-wrapper">
+        <img class="full-image outline" id="order-rendition" src=<%= originalURL %> alt="icon"/>
+        <div class="intro-content">
+            <!--            intro text -->
+            <div class="intro-text">
+                <% if(item.rendtion_status === "pending-feedback"){ %>
+                    <p>Waiting for user feedback!</p>
+                <% }else{ %>
+                    <div>
+                        <p>Select Emoji</p>
+                        <img class="preview-image" src="#" id="blah" alt="">
+                        <label for="image-upload" class="image-upload-button">Select File</label>
+                        <input type="file" name="upload" id="image-upload"
+                               accept="image/*"
+                               placeholder="Select File" required
+                               onchange="return validateFileUpload()">
                     </div>
-                </div>
+                <% } %>
+
+                <button class="button blue" id="upload-rendition">Upload</button>
             </div>
         </div>
     </div>
+
 
 </section>
 <section class="section">
@@ -49,7 +47,7 @@
             <% renditionArray.forEach(function(rendition) { %>
 
                 <!--            change to grid layout and share space evenly between the two-->
-                <img class="steve-img grid-child" id="order-rendition" src=<%= rendition.url %>  alt="icon">
+                <img class="full-image grid-child" id="order-rendition" src=<%= rendition.url %>  alt="icon">
                 <p class="rendition-description grid-child">Feedback: <%= rendition.feedback %></p>
 
             <% }) %>
@@ -76,7 +74,7 @@
 
 		formData.append("upload", fuData.files[0]);
 		formData.append("renditionCount", "<%- item.renditions.length %>");
-        location.href
+		location.href
 		//same as customer_id same as uuid
 		fetch('/rendition/' + '<%- item.customer_id %>', {
 			method: 'POST',
