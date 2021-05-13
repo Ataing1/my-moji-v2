@@ -11,7 +11,7 @@
 <%- include('../partials/header'); %>
 
 <section class="section">
-	<div class="container">
+
 		<div class="order-wrapper">
 			<div class="order-heading-wrap">
 				<p id="order-header-pt1">Custom Emoji, only $15</p>
@@ -32,19 +32,21 @@
 						close-up you send, so we don't allow you to say "give me cool sunglasses." But if you want
 						to,
 						get some cool sunglasses and upload a new close-up, that will work.</p>
-				</div>
-				<div>
-					<p>Upload a close-up!</p>
+					<p class="paragraph-bigger">Upload a close-up!</p>
 					<img class="preview-image" src="#" id="blah" alt="">
-					<label for="image-upload" class="image-upload-button">Select File</label>
+					<label for="image-upload" class=" button image-upload-button">Select File</label>
 					<input type="file" name="upload" id="image-upload" accept="image/*"
 						   placeholder="Select File" required
 						   onchange="return validateFileUpload()">
+					<button class="button blue" id="pay">Pay</button>
+
 				</div>
-				<button id="pay">Pay</button>
+
+
 			</form>
 
-		</div>
+
+
 	</div>
 </section>
 <script src="../../js/vendor/modernizr-3.11.2.min.js"></script>

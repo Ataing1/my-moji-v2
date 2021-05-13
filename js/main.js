@@ -1,3 +1,13 @@
+/* Toggle between adding and removing the "responsive" class to topnav when the user clicks on the icon */
+function updateNavBar() {
+	let x = document.getElementById("myTopnav");
+	if (x.className === "topnav") {
+		x.className += " responsive";
+	} else {
+		x.className = "topnav";
+	}
+}
+
 function validateFileUpload() {
 	let valid = true;
 	let fuData = document.getElementById('image-upload');
