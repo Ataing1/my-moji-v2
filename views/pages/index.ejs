@@ -5,8 +5,6 @@
 	<meta charset="utf-8"/>
 	<title>Home</title>
 	<meta name="description" content=""/>
-	<meta name="viewport" content="width=device-width, initial-scale=1"/>
-
 	<meta property="og:title" content=""/>
 	<meta property="og:type" content=""/>
 	<meta property="og:url" content=""/>
@@ -32,8 +30,8 @@
 				<!--            intro text -->
 				<div class="intro-text">
 					<!--                Heading jumbo-->
-					<h1 class="heading-jumbo">Introducing You,</h1>
-					<h1 class="heading-jumbo">As a Hand-Drawn Emoji</h1>
+					<h1 id="intro-line-1" class="heading-jumbo">Introducing You,</h1>
+					<h1 id="intro-line-2" class="heading-jumbo">As a Hand-Drawn Emoji</h1>
 					<!--                Paragraph bigger-->
 					<p class="paragraph-bigger">
 						MyMoji is a fun way to commemorate your team or
@@ -59,7 +57,7 @@
 <!--section-->
 <section class="section">
 		<!--		info heading-->
-		<div class="blog-heading">
+		<div class="work-heading-wrapper">
 			<h2 class="work-heading">Let's get you in character</h2>
 		</div>
 		<!--		collection list wrapper-->
@@ -69,7 +67,7 @@
 				<!--				instruction wrap-->
 				<div class="instruction-wrap">
 					<img class="instruction-img" src="../../img/photo-camera@2x.png" alt="icon"/>
-					<p class="instruction-title">UPLOAD YOUR PHOTO</p>
+					<h3 class="instruction-title">UPLOAD YOUR PHOTO</h3>
 					<p class="instruction-description">
 						Send us an in-focus, well-lit photo. The artists
 						know how to make you look good, so don’t stress
@@ -78,7 +76,7 @@
 				</div>
 				<div class="instruction-wrap">
 					<img class="instruction-img" src="../../img/photos@2x.png" alt="icon"/>
-					<p class="instruction-title">APPROVE YOUR DRAFT</p>
+					<h3 class="instruction-title">APPROVE YOUR DRAFT</h3>
 					<p class="instruction-description">
 						Customers are often surprised how good the first
 						draft is. But you get unlimited edits and redos
@@ -87,7 +85,7 @@
 				</div>
 				<div class="instruction-wrap">
 					<img class="instruction-img" src="../../img/lover@2x.png" alt="icon"/>
-					<p class="instruction-title">ENJOY YOUR MYMOJI</p>
+					<h3 class="instruction-title">ENJOY YOUR MYMOJI</h3>
 					<p class="instruction-description">
 						Put it on Slack. Order stickers from
 						<a target="_blank" href="https://www.stickermule.com/">StickerMule</a>. Put it on LinkedIn
@@ -108,10 +106,10 @@
 	<!--	container-->
 	<div class="container">
 		<!--		info heading-->
-		<div class="blog-heading">
-			<p class="work-heading">
+		<div class="work-heading-wrapper">
+			<h2 class="work-heading">
 				What people are saying about MyMoji
-			</p>
+			</h2>
 		</div>
 		<!--		collection list wrapper-->
 		<div class="collection-list-wrapper">
@@ -125,7 +123,7 @@
 						I love my MyMoji. It's great to share with
 						friends. I put it on everything!
 					</p>
-					<p class="testimonial-credit">Buddy</p>
+					<p class="testimonial-credit">- Buddy</p>
 				</div>
 				<div class="instruction-wrap">
 					<img class="instruction-img" src="../../img/Testimonial_Cameron_WithBefore@2x.png" alt="icon"/>
@@ -135,7 +133,7 @@
 						all the time. It is our go-to gift for other
 						parents.
 					</p>
-					<p class="testimonial-credit">Sunny</p>
+					<p class="testimonial-credit">- Sunny</p>
 				</div>
 				<div class="instruction-wrap">
 					<img class="instruction-img" src="../../img/Testimonial_Adam_WithBefore@2x.png" alt="icon"/>
@@ -145,7 +143,7 @@
 						interesting, professional avatar to use
 						everywhere.
 					</p>
-					<p class="testimonial-credit">Adam</p>
+					<p class="testimonial-credit">- Adam</p>
 				</div>
 			</div>
 		</div>
@@ -154,6 +152,7 @@
 		</button>
 	</div>
 </section>
+<%- include('../partials/footer'); %>
 
 <script src="../../js/vendor/modernizr-3.11.2.min.js"></script>
 <script src="../../js/plugins.js"></script>

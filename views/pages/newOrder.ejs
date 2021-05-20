@@ -2,9 +2,9 @@
 <html class="no-js" lang="en">
 
 <head>
-	<meta charset="UTF-8">
-	<title>New Order</title>
-	<%- include('../partials/head');%>
+    <meta charset="UTF-8">
+    <title>New Order</title>
+    <%- include('../partials/head'); %>
 </head>
 
 <body>
@@ -12,43 +12,42 @@
 
 <section class="section">
 
-		<div class="order-wrapper">
-			<div class="order-heading-wrap">
-				<p id="order-header-pt1">Custom Emoji, only $15</p>
-				<p id="order-header-pt2">Enter your MyMoji Details</p>
-				<p id="order-header-pt3">We will email you when the MyMoji is ready</p>
-			</div>
-			<form id="orderForm" class="order-form">
-				<div class="order-form-inner-wrapper">
-					<label for="order-name"></label>
-					<input id="order-name" type="text" class="text-field" placeholder="Name" required>
-					<label for="order-email"></label>
-					<input id="order-email" autocomplete="email" type="email" class="text-field" placeholder="Email"
-						   required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
-					<p>What would you like us to know when making your MyMoji (optional)</p>
-					<label class="label" for="other-information"></label>
-					<textarea id="other-information" type="text" class="text-field" rows="4" cols="50"></textarea>
-					<p>Note: We can only include one person or animal in your emoji. Also, the artists work with the
-						close-up you send, so we don't allow you to say "give me cool sunglasses." But if you want
-						to,
-						get some cool sunglasses and upload a new close-up, that will work.</p>
-					<p class="paragraph-bigger">Upload a close-up!</p>
-					<img class="preview-image" src="#" id="blah" alt="">
-					<label for="image-upload" class=" button image-upload-button">Select File</label>
-					<input type="file" name="upload" id="image-upload" accept="image/*"
-						   placeholder="Select File" required
-						   onchange="return validateFileUpload()">
-					<button class="button blue" id="pay">Pay</button>
 
-				</div>
+    <div class="order-heading-wrap">
+        <h3 id="order-header-pt1">Custom Emoji, only $15</h3>
+        <h3 id="order-header-pt2">Enter your MyMoji Details</h3>
+        <p id="order-header-pt3">We will email you when the MyMoji is ready</p>
+    </div>
+    <form id="orderForm" class="order-form">
+        <div class="order-form-inner-wrapper">
+            <label for="order-name">Name</label>
+            <input id="order-name" type="text" class="text-field" placeholder="Name" required>
+            <label for="order-email">Email</label>
+            <input id="order-email" autocomplete="email" type="email" class="text-field" placeholder="Email"
+                   required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+            <p>What would you like us to know when making your MyMoji (optional)</p>
+            <label class="label" for="other-information"></label>
+            <textarea id="other-information" type="text" class="text-field" rows="4" cols="50"></textarea>
+            <p>Note: We can only include one person or animal in your emoji. Also, the artists work with the
+                close-up you send, so we don't allow you to say "give me cool sunglasses." But if you want
+                to,
+                get some cool sunglasses and upload a new close-up, that will work.</p>
+            <p class="paragraph-bigger">Upload a close-up!</p>
+            <img class="preview-image" src="#" id="blah" alt="">
+            <label for="image-upload" class=" button image-upload-button">Select File</label>
+            <input type="file" name="upload" id="image-upload" accept="image/*"
+                   placeholder="Select File" required
+                   onchange="return validateFileUpload()">
+            <button class="button blue" id="pay">Pay</button>
 
-
-			</form>
+        </div>
 
 
+    </form>
 
-	</div>
+
 </section>
+<%- include('../partials/footer'); %>
 <script src="../../js/vendor/modernizr-3.11.2.min.js"></script>
 <script src="../../js/plugins.js"></script>
 <script src="../../js/main.js"></script>
@@ -72,7 +71,7 @@
 		if (!validateForm()) {
 			console.log("input invalid returning");
 			return;
-		}else{
+		} else {
 			console.log('input valid continuing to fetch');
 		}
 		e.preventDefault();

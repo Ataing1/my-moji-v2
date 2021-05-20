@@ -1,37 +1,61 @@
-/*
-Global
- */
+/*  ==========
+	Global
+	========== */
 :root {
 	--accent-color: rgb(11, 167, 248)
 }
 
 body {
 	font-family: 'Montserrat', sans-serif;
+	margin: 0 auto;
+	max-width: 1600px;
+	font-size: 1em;
+
 }
 
+/*  ==========
+	Typography
+	========== */
+
 h1 {
-	font-size: 2em
+	font-size: 1.8em
 }
 
 h2 {
-	font-size: 1.75em
+	font-size: 1.6em
 }
 
 h3 {
-	font-size: 1.50em
+	font-size: 1.2em
 }
 
 p {
-	font-size: 1em;
-	width: available;
-	/*width: clamp(45ch, 50%, 75ch);*/
+	font-size: .75em;
+}
+
+.heading-jumbo {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	position: static;
+	font-weight: bold;
+}
+
+.paragraph-bigger {
+	display: block;
+	margin-bottom: 10px;
+	position: static;
+	font-weight: normal;
+}
+
+.work-heading {
+	margin: 10px auto 20px;
+	font-weight: bold;
 }
 
 
-/*
-Header
- */
-
+/*  ==========
+	Navigation
+	========== */
 .navigation {
 	padding: 0 clamp(1rem, 2.5vw, 2rem);
 	display: flex;
@@ -41,6 +65,8 @@ Header
 	top: 0;
 	z-index: 1000;
 	background: white;
+	border-bottom: lightblue 2px solid;
+
 }
 
 .navigation-wrap {
@@ -51,7 +77,7 @@ Header
 }
 
 .logo-image {
-	height: 50px;
+	height: 40px;
 	width: auto;
 }
 
@@ -70,48 +96,27 @@ li a {
 	text-align: center;
 	padding: 14px 16px;
 	text-decoration: none;
-	font-size: clamp(.75em, 2.5vw, 1.4em);
+	font-size: clamp(.75em, 2.5vw, 1em);
 }
 
 li a:hover {
 	color: lightblue;
 }
 
-/*
-
- */
+/*  ==========
+		Layout
+		========== */
 .section {
 	margin: 0 auto;
 	position: static;
-	width: 1600px;
+	width: auto;
 	height: auto;
-}
-
-
-/*TODO make the nave buttons a drop down menu if below 720 */
-
-
-/*
-
-INTRO STYLING CSS
-
-*/
-
-
-.intro-header {
-	border-radius: 30px;
-	margin-bottom: 100px;
-	align-items: center;
-	justify-content: center;
-	display: flex;
-	position: static;
-	background-color: lightblue;
+	padding: 0;
 }
 
 .content-image-wrapper {
 	display: flex;
 	flex-direction: column;
-
 }
 
 .intro-content {
@@ -127,16 +132,18 @@ INTRO STYLING CSS
 
 }
 
-@media screen and (min-width: 720px) {
-	.intro-content {
-		text-align: left;
-	}
+/*  ==========
+	INTRO STYLING CSS
+	========== */
 
-	.content-image-wrapper {
-		flex-direction: row;
-	}
-
-
+.intro-header {
+	margin-bottom: 100px;
+	align-items: center;
+	justify-content: center;
+	display: flex;
+	position: static;
+	background-color: lightblue;
+	border-radius: 0 0 10px 10px;
 }
 
 .intro-text {
@@ -150,69 +157,14 @@ INTRO STYLING CSS
 }
 
 
-.heading-jumbo {
-	margin-top: 10px;
-	margin-bottom: 10px;
-	position: static;
-	font-weight: bold;
-
-}
-
-.paragraph-bigger {
-	display: block;
-	margin-bottom: 10px;
-	position: static;
-	font-weight: normal;
-	border: solid black 2px;
-
-}
-
-.button {
-	display: block;
-	padding: 16px 35px;
-	font-weight: bold;
-	font-size: 1rem;
-	border-radius: 40px;
-	outline: none;
-	margin: 20px auto;
-}
-
-.blue {
-	background-color: dodgerblue;
-	color: white;
-}
-
-.full-image {
-	max-width: 100%;
-	height: auto;
-	display: block;
-	object-fit: contain;
-}
-
-.outline {
-	outline: #222222 1px solid;
-}
-
-
-/*
-
-INSTRUCTION STYLING
-
-*/
-
-
-.blog-heading {
+/*  ==========
+	INSTRUCTION STYLING
+	========== */
+.work-heading-wrapper {
 	margin-bottom: 60px;
+	margin-top: 60px;
 	display: block;
 	text-align: center;
-	border: solid black 2px;
-}
-
-.work-heading {
-	margin: 10px auto 20px;
-	font-weight: bold;
-	border: solid black 1px;
-
 }
 
 .collection-list-wrapper {
@@ -232,22 +184,12 @@ INSTRUCTION STYLING
 	flex-shrink: initial;
 	display: block;
 	padding-bottom: 30px;
-	margin: auto;
+	margin: 0 auto;
 	width: 85%;
-	border-color: black;
-}
-
-.instruction-img {
-	margin-left: auto;
-	margin-right: auto;
-	display: block;
-	width: 120px;
-	height: auto;
 }
 
 .instruction-title {
 	font-weight: bold;
-	font-size: 25px;
 	text-align: center;
 }
 
@@ -256,94 +198,50 @@ INSTRUCTION STYLING
 	font-weight: bolder;
 }
 
-
-/*
-
-TESTIMONIAL SECTION CSS
-
-*/
+/*  ==========
+	TESTIMONIAL SECTION CSS
+	========== */
 
 .testimonial {
 	text-align: center;
 	font-family: 'Montserrat', sans-serif;
-	font-size: 17px;
 	font-style: italic;
+	font-weight: bolder;
 }
 
 .testimonial-credit {
 	text-align: center;
 	font-weight: bold;
-	font-size: 17px;
 }
 
-.cta-wrap {
-	display: block;
-	background-color: #b3d4fc;
-
-}
-
-.container-cta {
-	margin-left: auto;
-	margin-right: auto;
-	display: block;
-
-	width: 100%;
-	max-width: 1140px;
-	position: static;
-	font-family: 'Montserrat', sans-serif;
-	font-weight: normal;
-}
-
-.cta {
-	display: block;
-	padding-top: 50px;
-	margin-top: 50px;
-	margin-bottom: 50px;
-	font-size: 24px;
+.customer-info{
 	text-align: center;
-	font-weight: bold;
-
 }
 
-
-/*
-
+/*  ==========
 	NEW ORDER CSS
+	========== */
 
-*/
 
 .order-wrapper {
 	text-align: center;
-	padding: 45px 50px 50px;
-}
-
-@media screen and (min-width: 720px) {
-	.order-wrapper{
-		text-align: left;
-	}
+	padding: 20px 50px 50px;
 }
 
 
 .order-heading-wrap {
-	margin-bottom: 40px;
+	text-align: center;
 }
 
-#order-header-pt1 {
-	text-align: center;
+#order-header-pt1,
+#order-header-pt3{
 	font-weight: normal;
-	font-size: 20px;
+	margin: .5em;
 }
 
 #order-header-pt2 {
-	text-align: center;
 	font-weight: bold;
-	font-size: 24px;
-}
-
-#order-header-pt3 {
-	text-align: center;
-	font-weight: normal;
-	font-size: 16px;
+	margin: .5em;
 }
 
 .order-form {
@@ -351,12 +249,19 @@ TESTIMONIAL SECTION CSS
 	flex-direction: column;
 	justify-content: center;
 	margin: 0 auto;
-	width: 100%
+	width: 100%;
 }
 
 .order-form-inner-wrapper {
 	justify-content: center;
-	width: clamp(600px, 50%, 1140px);
+	padding: 2em;
+}
+
+/*centers the text field bc they were shifted with border radius*/
+#order-name,
+#order-email,
+#other-information{
+	margin-left: -9px;
 }
 
 .label {
@@ -370,7 +275,7 @@ TESTIMONIAL SECTION CSS
 	margin-bottom: 25px;
 	font-size: 14px;
 	border-width: 2px;
-	border-radius: 20px;
+	border-radius: 10px;
 	border-color: #e4e4e4;
 	outline: none;
 	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
@@ -393,6 +298,7 @@ TESTIMONIAL SECTION CSS
 	text-align: center;
 	background-color: gray;
 	color: white;
+	width: 30%;
 }
 
 .image-upload-button.is-invalid {
@@ -402,8 +308,9 @@ TESTIMONIAL SECTION CSS
 	background-position: center right calc(.35em + 6px);
 	background-size: calc(.7em + 12px) calc(.7em + 12px);
 }
-#pay{
-	width: 100%;
+
+#pay {
+	width: 30%;
 }
 
 input[type="file"] {
@@ -413,20 +320,61 @@ input[type="file"] {
 .grid-container {
 	display: grid;
 	grid-row-gap: 20px;
-	grid-auto-rows: 1fr;
 	padding-left: 0;
-	grid-template-columns: auto auto;
+	grid-template-columns: auto;
 	outline: #222222 1px solid;
 }
 
 .grid-child {
 	outline: #222222 2px solid;
-	margin: 0;
+	margin: auto auto;
 	column-fill: auto;
 
 }
 
+/*  ==========
+	Components
+	========== */
 
+.button {
+	display: block;
+	padding: 16px 35px;
+	font-weight: bold;
+	font-size: 1rem;
+	border-radius: 10px;
+	outline: none;
+	margin: 20px auto;
+}
+
+.blue {
+	background-color: dodgerblue;
+	color: white;
+}
+
+.image-box {
+	display: grid;
+	height: 100%;
+}
+
+.full-image {
+	width: clamp(60%, 70%, 70%);
+	height: auto;
+	margin: auto;
+	padding: 40px;
+}
+
+
+.outline {
+	outline: #222222 1px solid;
+}
+
+.instruction-img {
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+	width: 120px;
+	height: auto;
+}
 
 
 

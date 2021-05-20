@@ -1,72 +1,121 @@
-@media screen and (min-width: 720px) {
+@media screen and (min-width: 46.25em) {
+	.grid-container {
+		grid-template-columns: 70% 30%;
+		grid-auto-rows: 1fr;
+		max-width: 1000px;
+		margin: 0 auto;
+	}
+
+	#original-image{
+		max-width: 40%;
+	}
 
 
+}
 
+
+@media screen and (min-width: 56.25em) {
+
+	/*  ==========
+	Typography
+	========== */
+	h1 {
+		font-size: 2em
+	}
+
+	h2 {
+		font-size: 1.75em
+	}
+
+	h3 {
+		font-size: 1.5em
+	}
+
+	/*  ==========
+		Layout
+		========== */
+	.section {
+		max-width: 1600px;
+		margin: 0 auto;
+	}
+
+	/*  ==========
+	INTRO STYLING CSS
+	========== */
 	.intro-content {
-		max-width: 1140px;
-		margin-left: 20px;
-		margin-top: auto;
-		margin-bottom: auto;
-
-
-	}
-
-	.intro-text {
-		margin: 0;
-		width: 100%;
 		text-align: left;
-
-	}
-
-
-	.paragraph-bigger {
-		font-size: 20px;
-		text-align: start;
 	}
 
 	#section1button {
-		margin-top: 20px;
-		margin-left: 0;
-		margin-bottom: 0;
+		margin: 20px 0 auto;
 	}
 
-	.full-image {
-		flex-shrink: initial;
-		max-width: 40%;
-		height: auto;
-		object-fit: scale-down;
-		padding: 5px;
-	}
-
-	/*
-
-	INSTRUCTION STYLING
-
-	*/
-
-	.collection-wrap {
-		display: flex;
+	.content-image-wrapper {
 		flex-direction: row;
 	}
 
+
+	/*  ==========
+	INSTRUCTION STYLING
+	========== */
 	.instruction-wrap {
-		flex-shrink: initial;
-		display: block;
-		padding-bottom: 30px;
-		padding-left: 15px;
-		padding-right: 45px;
-		width: 33.33%;
-		border-color: black;
+		max-width: 30%;
 	}
+
+	/*  ==========
+	INSTRUCTION STYLING
+	========== */
+	.collection-wrap {
+		flex-direction: row;
+		gap: 2.5em;
+		margin: 0 2.5em;
+	}
+
+	/*  ==========
+	NEW ORDER CSS
+	========== */
+	.order-wrapper {
+		text-align: left;
+	}
+
+	/*  ==========
+	Components
+	========== */
+	.full-image {
+		width: clamp(40%, 45%, 50%);
+	}
+
+	#original-image{
+		max-width: 30%;
+		align-self: flex-start;
+		margin: 0 auto 0 0;
+	}
+
+	#artist-upload-container{
+		margin: 0 auto 0 0 ;
+	}
+
+
 }
 
-@media screen and (min-width: 1200px) {
+@media screen and (min-width: 67.4275em) {
 
-	.heading-jumbo {
-		font-size: 45px;
+	/*  ==========
+	Typography
+	========== */
+	p{
+		font-size: 1em;
 	}
 
-	.work-heading {
-		font-size: 41px;
+
+
+	#intro-line-1,
+	#intro-line-2 {
+		font-size: 2.3em;
 	}
+
+
+
+
 }
+

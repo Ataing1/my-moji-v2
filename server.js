@@ -65,7 +65,7 @@ app.get('/viewOrder/:uuid', async (req, res) => {
 	let original = await getImageUrlFromS3(req.params.uuid, INITIAL_UPLOAD);
 	let renditionURL = "";
 	let introLine = "your MyMoji is now in progress.";
-	if (item.rendition_status !== "pending-rendition") {
+	if (item.renditions.length>0) {
 		const renditionObject = await getImageUrlFromS3(req.params.uuid, item.renditions[0].name);
 		renditionURL = renditionObject.signed;
 		introLine = "Your Mymoji is Ready!"
@@ -112,8 +112,6 @@ app.get('/successfulFeedback/:uuid', async (req, res)=>{
 	res.render("pages/successfulFeedback", {uuid: req.params.uuid});
 });
 
-
-
 app.get('/feedbackView/:uuid', async (req, res)=>{
 	//send latest rendition url to display
 	const item = await getDynamoItem("abc123");
@@ -123,6 +121,10 @@ app.get('/feedbackView/:uuid', async (req, res)=>{
 
 	res.render("pages/feedback", {renditionURL: renditionURL, uuid: item.customer_id});
 });
+
+app.get('/aboutView', async(req, res)=>{
+	res.render("pages/aboutView");
+})
 
 
 
