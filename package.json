@@ -24,6 +24,7 @@
 		"@aws-sdk/s3-request-presigner": "^3.13.0",
 		"@aws-sdk/types": "^3.12.0",
 		"@aws-sdk/util-dynamodb": "^3.13.0",
+		"@slack/web-api": "^6.2.3",
 		"body-parser": "^1.19.0",
 		"cors": "^2.8.5",
 		"dotenv": "^8.2.0",

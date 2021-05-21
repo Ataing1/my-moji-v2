@@ -10,16 +10,11 @@
 <%- include('../partials/header'); %>
 <section class="section">
     <div class="customer-info">
-        <p class=paragraph-bigger>Order ID: <%= orderID %></p>
+        <p class=paragraph-bigger>Order ID: <%= item.customer_id %></p>
         <p class="paragraph-bigger">Customer Notes: <%= item.notes %></p>
     </div>
-
-
-    <!--    intro header-->
-
-
     <div class="content-image-wrapper">
-        <img class="full-image outline" id="original-image" src=<%= originalURL %> alt="icon"/>
+        <img class="full-image" id="original-image" src=<%= originalURL %> alt="icon"/>
         <div class="intro-content" id="artist-upload-container">
             <!--            intro text -->
             <div class="intro-text">
@@ -38,17 +33,21 @@
             </div>
         </div>
     </div>
-
-
 </section>
 <section class="section">
+    <h2 class="rendition-grid-title">Renditions</h2>
     <% if (item.renditions.length > 0){ %>
         <ul class="grid-container">
             <% renditionArray.forEach(function(rendition) { %>
 
-                <!--            change to grid layout and share space evenly between the two-->
-                <img class="full-image grid-child" id="original-image" src=<%= rendition.url %>  alt="icon">
-                <p class="rendition-description grid-child">Feedback: <%= rendition.feedback %></p>
+                <div class="rendition-card">
+                    <!--            change to grid layout and share space evenly between the two-->
+                    <img class="card-image"src=<%= rendition.url %>  alt="icon">
+                    <div class="rendition-description-wrapper">
+                        <p class="rendition-description">Feedback: <%= rendition.feedback %></p>
+                    </div>
+
+                </div>
 
             <% }) %>
         </ul>

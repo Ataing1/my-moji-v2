@@ -6,21 +6,29 @@ const upload = multer();
 const {uploadImageToS3, getImageUrlFromS3} = require("./serverUtil/s3");
 const {putItemInDatabase, AddRenditionToDatabase,AddFeedbackToDatabase ,getDynamoItem} = require("./serverUtil/dynamo");
 const {v4: uuidV4} = require('uuid')
+const { WebClient, LogLevel } = require("@slack/web-api");
 const devMode = process.env.NODE_ENV === 'development';
 const INITIAL_UPLOAD = "initial-upload";
 //USE GLOBAL VARIABLES SPARINGLY
 
 //development mode uses DOTENV to load a .env file which contains the environmental variables. Access via process.env
+let tempClient;
 if (devMode) {
 	console.log("THIS IS DEVELOPMENT MODE");
 	console.log(require('dotenv').config())
 	require('dotenv').config({path: './.env'});
 	const cors = require('cors');
 	app.use(cors());
+	tempClient = new WebClient("xoxb-your-token", {
+		// LogLevel can be imported and used to make debugging simpler
+		logLevel: LogLevel.DEBUG
+	});
 } else {
 	console.log("THIS IS PRODUCTION MODE");
 	console.log(process.env);
+	tempClient= new WebClient(process.env.SLACK_OAUTH);
 }
+const client = tempClient;
 
 checkEnv(); //check if price environmental variable is set for STRIPE
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY); //init stripe
@@ -58,29 +66,30 @@ app.get('/viewOrder/:uuid', async (req, res) => {
 
 
 	const item = await getDynamoItem("abc123");
+	//IF UUID IS NOT IN OUR DATABASE SEND A 404 error, or an oops this page does not exist
+	if(item.rendition_status==="pending-first-rendition"){
+		res.render("pages/notReadyView");
+		return;
+	}
 	if(item.rendition_status==="pending-rendition"){ //forward to pending screen to save image loads, and prevent user from inputting new feedback accidentally
 		res.redirect("/successfulFeedback/"+req.params.uuid);
 		return;
 	}
 	let original = await getImageUrlFromS3(req.params.uuid, INITIAL_UPLOAD);
-	let renditionURL = "";
-	let introLine = "your MyMoji is now in progress.";
-	if (item.renditions.length>0) {
-		const renditionObject = await getImageUrlFromS3(req.params.uuid, item.renditions[0].name);
-		renditionURL = renditionObject.signed;
-		introLine = "Your Mymoji is Ready!"
+
+	let renditionArray = [];
+	for(let i = 0;i<item.renditions.length;i++){
+		if(item.renditions[i].feedback==="null"){ //only show renditions without feedback, different than artist view, which shows every rendition
+			const rendition = await getImageUrlFromS3(req.params.uuid, item.renditions[i].name);
+			renditionArray[i] = {url: rendition.signed, feedback: item.renditions[i].feedback};
+		}
 	}
-	console.log("rendering", {
-		item: item,
-		introLine: introLine,
-		originalURL: original.signed,
-		renditionURL: renditionURL,
-	})
+
 	res.render("pages/viewOrder", {
 		item: item,
-		introLine: introLine,
 		originalURL: original.signed,
-		renditionURL: renditionURL,
+		renditionArray: renditionArray,
+
 	})
 });
 
@@ -94,10 +103,11 @@ app.get('/artistView/:uuid', async (req, res) => {
 	let renditionArray = [];
 	for(let i = 0;i<item.renditions.length;i++){
 		const rendition = await getImageUrlFromS3(req.params.uuid, item.renditions[i].name);
-		renditionArray[i] = {url: rendition.signed, feedback: item.renditions[i].feedback};
+		//replaces null feedback with pending feedback because we don't want to show the user "null"
+		const feedbackValue = item.renditions[i].feedback==="null"?"Pending feeedback":item.renditions[i].feedback;
+		renditionArray[i] = {url: rendition.signed, feedback: feedbackValue};
 	}
 	res.render("pages/artistView", {
-		orderID: req.params.uuid,
 		item: item,
 		originalURL: original.signed,
 		renditionArray: renditionArray,
@@ -232,6 +242,14 @@ app.post('/webhook', async (req, res) => {
 	if (eventType === 'checkout.session.completed') {
 		console.log(`🔔  Payment received!`);
 		sendEmail(data);
+		console.log("data from webhook", data);
+		const {name, email,uuid} = data
+		const domainURL = process.env.DOMAIN;
+		const artistPageLink =`<${domainURL}/artistView/${uuid}|Artist page>`;
+		const text = `We have a new order from ${name}\n\n\t${email}\n\n\t${artistPageLink}`
+
+		await publishSlackMessage(text);
+
 		//TODO #2 slack notify the artist
 
 
@@ -261,7 +279,7 @@ app.post('/rendition/:uuid', upload.single('upload'), async(req, res)=>{
 	console.log("req.body", req.body);
 	console.log("req.file", req.file);
 
-	const item = await getDynamoItem("abc123");
+	const item = await getDynamoItem(req.params.uuid);
 	let filename = "rendition_" + item.renditions.length;
 	await uploadImageToS3(filename, req.file, req.params.uuid);
 	const data = await AddRenditionToDatabase(req.params.uuid, filename);
@@ -272,10 +290,42 @@ app.post('/rendition/:uuid', upload.single('upload'), async(req, res)=>{
 app.post('/feedback/:uuid', upload.none(), async (req, res)=>{
 	console.log("uploading user feedback");
 	console.log("req.body", req.body);
+	console.log("req id", req.params.uuid);
 	const {feedback} = req.body;
+	const processedFeedback = feedback.replace(/(\r\n|\n|\r)/gm," ")
+	console.log("feedback", processedFeedback, typeof(processedFeedback));
 	const data = await AddFeedbackToDatabase(req.params.uuid, feedback);
+	const item = await getDynamoItem(req.params.uuid);
+	console.log("item recieved", item);
+	const {name, email,customer_id} = item
+	const domainURL = process.env.DOMAIN;
+	const artistPageLink =`<${domainURL}/artistView/${customer_id}|Artist page>`;
+	const text = `${name} gave feedback: ${feedback}\n\n\t${email}\n\n\t${artistPageLink}`
+	await publishSlackMessage(text);
 	res.send(data);
 })
+
+
+// Post a message to a channel your app is in using ID and message text
+async function publishSlackMessage(text) {
+	try {
+		// Call the chat.postMessage method using the built-in WebClient
+		const result = await client.chat.postMessage({
+			// The token you used to initialize your app
+			token: process.env.SLACK_OAUTH,
+			channel: process.env.SLACK_CHANNEL_ID,
+			text: text
+			// You could also use a blocks[] array to send richer content
+		});
+
+		// Print result, which includes information about the message (like TS)
+		console.log(result);
+	}
+	catch (error) {
+		console.error(error);
+	}
+}
+
 
 
 

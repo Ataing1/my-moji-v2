@@ -36,13 +36,14 @@ async function getImageUrlFromS3(uuid, name) {
 		// Create the command.
 		const command = new GetObjectCommand(imageParams);
 
+		console.log(`\nGetting "${imageParams.Key}" using signedUrl in v3`);
+		// console.log(signedUrl);
+
 		// Create the presigned URL.
 		const signedUrl = await getSignedUrl(s3, command, {
 			expiresIn: 3600,
 		});
-		console.log(`\nGetting "${imageParams.Key}" using signedUrl in v3`);
-		console.log(signedUrl);
-
+		console.log("Successfully got URL!");
 		return ({"signed": signedUrl});
 	} catch (err) {
 		console.log("Error creating presigned URL", err);

@@ -132,6 +132,10 @@ li a:hover {
 
 }
 
+.spacer{
+	height: 50px;
+}
+
 /*  ==========
 	INTRO STYLING CSS
 	========== */
@@ -249,12 +253,15 @@ li a:hover {
 	flex-direction: column;
 	justify-content: center;
 	margin: 0 auto;
-	width: 100%;
 }
 
 .order-form-inner-wrapper {
 	justify-content: center;
 	padding: 2em;
+}
+
+.input-wrapper{
+	width: 100%;
 }
 
 /*centers the text field bc they were shifted with border radius*/
@@ -319,10 +326,12 @@ input[type="file"] {
 
 .grid-container {
 	display: grid;
-	grid-row-gap: 20px;
+	grid-row-gap: 50px;
+	grid-column-gap: 50px;
 	padding-left: 0;
-	grid-template-columns: auto;
-	outline: #222222 1px solid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	grid-auto-rows: 1fr;
+	border-radius: 5px;
 }
 
 .grid-child {
@@ -363,7 +372,6 @@ input[type="file"] {
 	padding: 40px;
 }
 
-
 .outline {
 	outline: #222222 1px solid;
 }
@@ -374,6 +382,44 @@ input[type="file"] {
 	display: block;
 	width: 120px;
 	height: auto;
+}
+
+.rendition-card{
+	display: flex;
+	flex-direction: column;
+	/* Add shadows to create the "card" effect */
+	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+	transition: 0.3s;
+	border: lightblue 1px solid;
+	text-align: center;
+}
+
+
+/* On mouse-over, add a deeper shadow */
+.rendition-card:hover {
+	box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+.card-image{
+
+	width: clamp(60%, 70%, 70%);
+	height: auto;
+
+	margin: 10px auto auto auto;
+}
+.rendition-description-wrapper{
+	border-top: lightblue 2px dotted;
+}
+
+.rendition-description{
+	align-self: flex-end;
+	text-align: center;
+	margin: 10px auto;
+}
+
+.rendition-grid-title{
+	text-align: center;
+	margin-top: 50px;
 }
 
 

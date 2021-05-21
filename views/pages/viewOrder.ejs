@@ -18,21 +18,12 @@
                 <!--            intro text -->
                 <div class="intro-text">
                     <!--                Heading jumbo-->
-                    <p class="heading-jumbo"><%= item.name %>, <%= introLine %></p>
-                    <% if(renditionURL){ %>
-                        <p class="paragraph-bigger">View your rendition below!</p>
-                    <% }else{ %>
-                        <p class="paragraph-bigger">
-                            Our artists will get to work right away. We'll email you when
-                            your MyMoji is ready (expect to hear back from us within 24-48
-                            hours). We think you'll love it, but once you receive your
-                            MyMoji you'll also be able to request any changes you think will
-                            make it that much better.
-                        </p>
-                    <% } %>
+                    <h1 class="heading-jumbo"><%= item.name %>, the MyMoji is ready!</h1>
+
+                    <h3 class="paragraph-bigger">View your renditions below!</h3>
 
                     <p class="heading-jumbo">
-                        Here's your order number:
+                        Here's your order number: <%= item.customer_id %>
                     </p>
                     <p id="order-number" style="font-style: italic"></p>
                     <p class="paragraph-bigger">
@@ -49,35 +40,28 @@
     </div>
 </section>
 
-<% if(renditionURL){ %>
+<section class="section">
     <div class="work-heading-wrapper">
-        <p class="work-heading">Renditions</p>
+        <h2 class="work-heading">Renditions</h2>
     </div>
-    <section class="section">
-        <!--    intro header-->
-        <div class="intro-header">
-
-            <div class="content-image-wrapper">
-                <div class="content-image-wrapper">
-                    <img class="full-image" id="original-image" src=<%= renditionURL %> alt="icon"/>
-                    <div class="intro-content">
-                        <!--            intro text -->
-                        <div class="intro-text">
-                            <!--                Heading jumbo-->
-                            <button class="button blue" style="align-content: start"
-                                    onclick="location.href='/downloadView/'+ '<%=item.customer_id%>';">
-                                Looks great!
-                            </button>
-                            <button class="button" onclick="location.href='/feedbackView/'+ '<%=item.customer_id%>';">
-                                Request Changes
-                            </button>
-                        </div>
-                    </div>
-                </div>
+    <ul class="grid-container">
+        <% renditionArray.forEach(function(rendition) { %>
+            <!--            change to grid layout and share space evenly between the two-->
+            <div class="rendition-card">
+                <img class="card-image" id="original-image" src=<%= rendition.url %>  alt="icon">
+                <!--                Heading jumbo-->
+                <button class="button blue" style="align-content: start"
+                        onclick="location.href='/downloadView/'+ '<%= item.customer_id %>';">
+                    Looks great!
+                </button>
+                <button class="button" onclick="location.href='/feedbackView/'+ '<%= item.customer_id %>';">
+                    Request Changes
+                </button>
             </div>
-        </div>
-    </section>
-<% } %>
+        <% }) %>
+    </ul>
+</section>
+
 <%- include('../partials/footer'); %>
 <script src="../../js/vendor/modernizr-3.11.2.min.js"></script>
 <script src="../../js/plugins.js"></script>

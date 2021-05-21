@@ -44,7 +44,8 @@ async function AddRenditionToDatabase(uuid, file_name) {
 	const client = new DynamoDBClient({region: REGION});
 	try {
 		const data = await client.send(new UpdateItemCommand(params));
-		console.log("Success - updated item in database", data);
+		// console.log("Success - updated item in database", data);
+		console.log("Success - updated item in database");
 	} catch (err) {
 		console.log("Error", err);
 	}
@@ -82,7 +83,8 @@ async function AddFeedbackToDatabase(uuid, feedback) {
 	const client = new DynamoDBClient({region: REGION});
 	try {
 		const data = await client.send(new UpdateItemCommand(params));
-		console.log("Success - updated item in database", data);
+		// console.log("Success - updated item in database", data);
+		console.log("Success - updated item in database");
 	} catch (err) {
 		console.log("Error", err);
 	}
@@ -97,7 +99,8 @@ async function putItemInDatabase(data) {
 	const client = new DynamoDBClient({region: REGION});
 	try {
 		const result = await client.send(new PutItemCommand(params));
-		console.log("success: put item in database", result);
+		// console.log("success: put item in database", result);
+		console.log("success: put item in database");
 	} catch (err) {
 		console.error(err);
 	}
@@ -115,11 +118,10 @@ async function getDynamoItem(uuid) {
 	try {
 		const {Item} = await client.send(new GetItemCommand(params));
 		// Convert the DynamoDB record you retrieved into a JavaScript object
-		console.log("pre unmarshal", Item);
-		const unmarshalledObject = unmarshall(Item);
+		// console.log("pre unmarshal", Item);
 		// Print the JavaScript object to console
-		console.log("success: got item from database", unmarshalledObject);
-		return unmarshalledObject;
+		// console.log("success: got item from database", unmarshalledObject);
+		return unmarshall(Item);
 	} catch (err) {
 		console.log("Error", err);
 	}

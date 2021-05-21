@@ -20,25 +20,33 @@
     </div>
     <form id="orderForm" class="order-form">
         <div class="order-form-inner-wrapper">
-            <label for="order-name">Name</label>
-            <input id="order-name" type="text" class="text-field" placeholder="Name" required>
-            <label for="order-email">Email</label>
-            <input id="order-email" autocomplete="email" type="email" class="text-field" placeholder="Email"
-                   required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
-            <p>What would you like us to know when making your MyMoji (optional)</p>
-            <label class="label" for="other-information"></label>
-            <textarea id="other-information" type="text" class="text-field" rows="4" cols="50"></textarea>
-            <p>Note: We can only include one person or animal in your emoji. Also, the artists work with the
-                close-up you send, so we don't allow you to say "give me cool sunglasses." But if you want
-                to,
-                get some cool sunglasses and upload a new close-up, that will work.</p>
-            <p class="paragraph-bigger">Upload a close-up!</p>
-            <img class="preview-image" src="#" id="blah" alt="">
-            <label for="image-upload" class=" button image-upload-button">Select File</label>
-            <input type="file" name="upload" id="image-upload" accept="image/*"
-                   placeholder="Select File" required
-                   onchange="return validateFileUpload()">
-            <button class="button blue" id="pay">Pay</button>
+            <div class="input-wrapper">
+                <label for="order-name">Name</label>
+                <input id="order-name" type="text" class="text-field" placeholder="Name" required>
+            </div>
+            <div class="input-wrapper">
+                <label for="order-email">Email</label>
+                <input id="order-email" autocomplete="email" type="email" class="text-field" placeholder="Email"
+                       required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+            </div>
+           <div class="input-wrapper">
+               <p>What would you like us to know when making your MyMoji (optional)</p>
+               <label class="label" for="other-information"></label>
+               <textarea id="other-information" type="text" class="text-field" rows="4" cols="50"></textarea>
+               <p>Note: We can only include one person or animal in your emoji. Also, the artists work with the
+                   close-up you send, so we don't allow you to say "give me cool sunglasses." But if you want
+                   to,
+                   get some cool sunglasses and upload a new close-up, that will work.</p>
+               <p class="paragraph-bigger ">Upload a close-up!</p>
+               <img class="preview-image" src="#" id="blah" alt="">
+               <label for="image-upload" class=" button image-upload-button">Select File</label>
+               <input type="file" name="upload" id="image-upload" accept="image/*"
+                      placeholder="Select File" required
+                      onchange="return validateFileUpload()">
+               <button class="button blue pay-button" id="pay">Pay</button>
+           </div>
+
+
 
         </div>
 

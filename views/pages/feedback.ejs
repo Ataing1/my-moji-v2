@@ -11,13 +11,27 @@
 <!--rendition image-->
 <!--"what would you like to tell the artist?-->
 <!--textbox-->
-<img class="full-image" id="original-image" src=<%= renditionURL %> alt="icon"/>
-<p class="paragraph-bigger">What would you like to tell the artist?</p>
-<label class="label" for="other-information"></label>
-<textarea id="other-information" type="text" class="text-field" rows="4" cols="50"></textarea>
-<button class="button blue" id="submit">Submit</button>
-<%- include('../partials/footer'); %>
+<section class="section">
+    <div class="rendition-card">
+        <img class="full-image" id="original-image" src=<%= renditionURL %> alt="icon"/>
+    </div>
+    <div class="order-form">
+        <div class="order-form-inner-wrapper">
+            <div class="input-wrapper">
+                <p class="paragraph-bigger">What would you like to tell the artist?</p>
+                <label class="label" for="other-information"></label>
+                <textarea id="other-information" type="text" class="text-field" rows="4" cols="50"></textarea>
+                <button class="button blue" id="submit">Submit</button>
+            </div>
 
+        </div>
+    </div>
+
+
+</section>
+
+<%- include('../partials/footer'); %>
+<script> let UUID = "<%=uuid%>"</script>
 <script charset="UTF-8">
 
     let checkoutButton = document.getElementById("submit");
@@ -31,14 +45,14 @@
 		formData.append("feedback", feedback.value);
 
 
-		fetch('/feedback/' + "<%=uuid%>", {
+		fetch(`/feedback/${UUID}`, {
 			method: 'POST',
 			body: formData
 
 		})
 			.then(function (response) {
 				console.log(response);
-				location.href = '/successfulFeedback/' + "<%=uuid%>"
+				location.href = `/successfulFeedback/${UUID}`
 				return response.json();
 			})
 			.catch(function (error) {

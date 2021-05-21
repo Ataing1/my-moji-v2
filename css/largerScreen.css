@@ -1,13 +1,26 @@
 @media screen and (min-width: 46.25em) {
 	.grid-container {
-		grid-template-columns: 70% 30%;
-		grid-auto-rows: 1fr;
-		max-width: 1000px;
 		margin: 0 auto;
 	}
 
-	#original-image{
+	#original-image {
 		max-width: 40%;
+		margin: 0 auto;
+		padding: 20px;
+	}
+
+	.order-form-inner-wrapper{
+		margin: 0 auto;
+	}
+
+	.input-wrapper{
+		width: clamp(40ch, 100%, 75ch);
+		margin: 0 auto;
+	}
+
+	.image-upload-button,
+	.pay-button{
+		margin: 20px 0;
 	}
 
 
@@ -85,14 +98,9 @@
 		width: clamp(40%, 45%, 50%);
 	}
 
-	#original-image{
-		max-width: 30%;
-		align-self: flex-start;
-		margin: 0 auto 0 0;
-	}
 
-	#artist-upload-container{
-		margin: 0 auto 0 0 ;
+	#artist-upload-container {
+		margin: 0 auto 0 0;
 	}
 
 
@@ -103,18 +111,15 @@
 	/*  ==========
 	Typography
 	========== */
-	p{
+	p {
 		font-size: 1em;
 	}
-
 
 
 	#intro-line-1,
 	#intro-line-2 {
 		font-size: 2.3em;
 	}
-
-
 
 
 }
