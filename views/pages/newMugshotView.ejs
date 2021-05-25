@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Order</title>
+    <%- include('../partials/head'); %>
+
+</head>
+<body>
+<%- include('../partials/header'); %>
+<!--rendition image-->
+<!--"what would you like to tell the artist?-->
+<!--textbox-->
+<section class="section">
+    <div class="rendition-card">
+        <img class="full-image" id="original-image" src=<%= originalUrl %> alt="icon"/>
+    </div>
+    <div class="order-form">
+        <div class="order-form-inner-wrapper">
+            <div class="input-wrapper">
+                <p class="paragraph-bigger ">Upload a new close-up.</p>
+                <img class="preview-image" src="#" id="blah" alt="">
+                <div class="image-upload-wrapper">
+                    <input type="file" name="upload" id="image-upload" accept="image/*"
+                           placeholder="Select File" required
+                           onchange="return validateFileUpload()">
+                    <label for="image-upload" class="image-upload-wrapper--label">Select File</label>
+
+                </div>
+
+                <button class="button blue pay-button"  id="pay">Submit</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<%- include('../partials/footer'); %>
+<%- include('../partials/scripts');%>
+
+<script> let UUID = "<%=uuid%>"</script>
+<script charset="UTF-8">
+
+	let checkoutButton = document.getElementById("pay");
+	checkoutButton.addEventListener('click', function (e) {
+		e.preventDefault();
+		if (!validateFileUpload()) {
+			console.log("input invalid returning");
+			return;
+		} else {
+			console.log('input valid continuing to fetch');
+		}
+		if(!confirm('Warning: Uploading a new close-up will remove all past renditions')){
+			return;
+        }
+
+		let formData = new FormData();
+		let fuData = document.getElementById('image-upload');
+		formData.append("upload", fuData.files[0]);
+
+
+		fetch(`/newMugshot/${UUID}`, {
+			method: 'POST',
+			body: formData
+		})
+			.then(function (response) {
+				console.log(response);
+				location.href = `/successfulOrder/${UUID}`;
+				return response.json();
+			})
+			.catch(function (error) {
+				console.error('Error:', error);
+			});
+	});
+
+</script>
+</body>

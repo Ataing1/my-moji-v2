@@ -4,7 +4,7 @@
 	}
 
 	#original-image {
-		max-width: 40%;
+		max-width: 30%;
 		margin: 0 auto;
 		padding: 20px;
 	}
@@ -18,11 +18,12 @@
 		margin: 0 auto;
 	}
 
-	.image-upload-button,
+	.image-upload-label{
+		margin: 20px 0;
+	}
 	.pay-button{
 		margin: 20px 0;
 	}
-
 
 }
 
@@ -59,7 +60,8 @@
 		text-align: left;
 	}
 
-	#section1button {
+	#section1button ,
+	#change-mugshot-button{
 		margin: 20px 0 auto;
 	}
 
@@ -90,6 +92,10 @@
 	.order-wrapper {
 		text-align: left;
 	}
+
+
+
+
 
 	/*  ==========
 	Components

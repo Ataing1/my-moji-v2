@@ -56,7 +56,7 @@ p {
 /*  ==========
 	Navigation
 	========== */
-.navigation {
+.navigation-header {
 	padding: 0 clamp(1rem, 2.5vw, 2rem);
 	display: flex;
 	align-items: center;
@@ -66,7 +66,19 @@ p {
 	z-index: 1000;
 	background: white;
 	border-bottom: lightblue 2px solid;
+}
 
+.navigation-footer {
+	padding: 0 clamp(1rem, 2.5vw, 2rem);
+	display: flex;
+	align-items: center;
+	justify-content: start;
+	position: sticky;
+	top: 0;
+	z-index: 1000;
+	background: white;
+	border-top: lightblue 2px solid;
+	margin-top: 20px;
 }
 
 .navigation-wrap {
@@ -301,14 +313,28 @@ li a:hover {
 	height: auto;
 }
 
-.image-upload-button {
+.image-upload-button ,
+input[type="file"]{
 	text-align: center;
 	background-color: gray;
 	color: white;
 	width: 30%;
+	display: block;
+	padding: 16px 35px;
+	font-weight: bold;
+	font-size: 1rem;
+	border-radius: 10px;
+	outline: none;
+	margin: 20px auto;
 }
 
-.image-upload-button.is-invalid {
+.image-upload-button:focus + label,
+.image-upload-button:hover + label,
+.image-upload-button:active + label{
+	box-shadow: 0 0 0 5px rgba(21, 156, 228, 0.4);
+}
+
+.image-upload-button-invalid{
 	border-color: #d9534f;
 	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23d9534f' viewBox='-2 -2 7 7'%3e%3cpath stroke='%23d9534f' d='M0 0l3 3m0-3L0 3'/%3e%3ccircle r='.5'/%3e%3ccircle cx='3' r='.5'/%3e%3ccircle cy='3' r='.5'/%3e%3ccircle cx='3' cy='3' r='.5'/%3e%3c/svg%3E");
 	background-repeat: no-repeat;
@@ -318,11 +344,14 @@ li a:hover {
 
 #pay {
 	width: 30%;
+	margin: 20px auto 0 0;
+
 }
 
-input[type="file"] {
-	display: none;
-}
+/*input[type="file"] {*/
+/*	display: none;*/
+/*}*/
+
 
 .grid-container {
 	display: grid;
@@ -347,12 +376,19 @@ input[type="file"] {
 
 .button {
 	display: block;
-	padding: 16px 35px;
+	padding: 16px clamp(5px, 20px, 35px);
 	font-weight: bold;
 	font-size: 1rem;
 	border-radius: 10px;
 	outline: none;
 	margin: 20px auto;
+}
+
+
+
+.button:hover,
+.button:focus{
+	box-shadow: 0 0 0 5px rgba(21, 156, 228, 0.4);
 }
 
 .blue {
@@ -396,7 +432,7 @@ input[type="file"] {
 
 
 /* On mouse-over, add a deeper shadow */
-.rendition-card:hover {
+.rendition-card:hover{
 	box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
 
@@ -408,7 +444,7 @@ input[type="file"] {
 	margin: 10px auto auto auto;
 }
 .rendition-description-wrapper{
-	border-top: lightblue 2px dotted;
+	border-top: lightblue 1px solid;
 }
 
 .rendition-description{
@@ -422,9 +458,24 @@ input[type="file"] {
 	margin-top: 50px;
 }
 
+.upload-file-ok{
+	border: 3px solid green;
+}
 
+.upload-file-warning{
+	border: 3px solid red;
+}
 
+.image-upload-wrapper{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	align-content: center;
+}
 
+.image-upload-wrapper--label{
+	flex-grow: 4;
+}
 
 
 

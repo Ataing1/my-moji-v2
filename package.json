@@ -1,10 +1,10 @@
 {
 	"name": "my-moji",
 	"version": "0.0.1",
-	"description": "",
+	"description": "Website built for TeamGroupCartoon",
 	"keywords": [],
 	"license": "",
-	"author": "",
+	"author": "Andrew Taing",
 	"scripts": {
 		"build": "parcel build views/pages/index.ejs",
 		"dev": "parcel views/pages/index.ejs --open",
@@ -30,9 +30,11 @@
 		"dotenv": "^8.2.0",
 		"ejs": "^3.1.6",
 		"express": "^4.17.1",
+		"human-readable-ids": "^1.0.4",
 		"multer": "^1.4.2",
 		"nodemailer": "^6.5.0",
 		"nodemon": "^2.0.7",
+		"short-uuid": "^4.2.0",
 		"stripe": "^8.143.0",
 		"uuid": "^8.3.2"
 	}

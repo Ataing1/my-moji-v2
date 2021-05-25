@@ -64,7 +64,7 @@ async function AddFeedbackToDatabase(uuid, feedback) {
 	attributeNames["#renditions"] = "renditions";
 	updateExpression += ", ";
 	updateExpression += "rendition_status = :status";
-	updateValues[":status"] = {"S": "pending-rendition"}; //turns value in items[key[i]]
+	updateValues[":status"] = {"S": "pending-first-rendition"}; //turns value in items[key[i]]
 	updateExpression += ", ";
 	updateExpression += "#updated_at = :updated_at";
 	updateValues[":updated_at"] = {"S": new Date(Date.now()).toString()}; //turns value in items[key[i]]
@@ -85,6 +85,47 @@ async function AddFeedbackToDatabase(uuid, feedback) {
 		const data = await client.send(new UpdateItemCommand(params));
 		// console.log("Success - updated item in database", data);
 		console.log("Success - updated item in database");
+	} catch (err) {
+		console.log("Error", err);
+	}
+}
+
+async function clearFeedbackInDatabase(uuid,  indexesToDelete) {
+	// testUpdate();
+	// return;
+	console.log(typeof (indexesToDelete), typeof (uuid), uuid, indexesToDelete);
+	let updateExpression = "SET ";
+	let updateValues = {};
+	let attributeNames = {};
+	for(let i = 0;i<indexesToDelete.length;i++){
+		updateExpression += `#renditions[${indexesToDelete[i]}].feedback = :feedback`;
+	}
+	updateValues[":feedback"] = {"S": "N/A: Customer uploaded new mugshot"}; //turns value in items[key[i]]
+	attributeNames["#renditions"] = "renditions";
+	updateExpression += ", ";
+	updateExpression += "rendition_status = :status";
+	updateValues[":status"] = {"S": "pending-rendition"}; //turns value in items[key[i]]
+	updateExpression += ", ";
+	updateExpression += "#updated_at = :updated_at";
+	updateValues[":updated_at"] = {"S": new Date(Date.now()).toString()}; //turns value in items[key[i]]
+	attributeNames["#updated_at"] = "updated_at";
+
+	console.log("update expression: ", updateExpression)
+	const params = {
+		TableName: TABLE_NAME,
+		Key: {
+			customer_id: {"S": uuid}
+		},
+		UpdateExpression: updateExpression,
+		ExpressionAttributeValues: updateValues,
+		ExpressionAttributeNames: attributeNames,
+
+	};
+	const client = new DynamoDBClient({region: REGION});
+	try {
+		const data = await client.send(new UpdateItemCommand(params));
+		// console.log("Success - updated item in database", data);
+		console.log("Success - updated items in database");
 	} catch (err) {
 		console.log("Error", err);
 	}
@@ -133,6 +174,7 @@ module.exports = {
 	putItemInDatabase,
 	AddRenditionToDatabase,
 	AddFeedbackToDatabase,
+	clearFeedbackInDatabase
 }
 // module.exports.AddRenditionToDatabase = AddRenditionToDatabase;
 // module.exports.AddFeedbackToDatabase = AddFeedbackToDatabase;

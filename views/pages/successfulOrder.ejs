@@ -18,9 +18,8 @@
 		make it that much better.
 	</p>
 	<p class="work-heading" style="text-align: left">
-		Here's your order number:
+		Here's your order ID : <%=uuid%>
 	</p>
-	<p id="order-number" style="font-style: italic"></p>
 	<p class="paragraph-bigger">
 		If you have any questions you can reach us at contact@mymoji.com
 	</p>
@@ -31,16 +30,6 @@
 <script src="../../js/vendor/modernizr-3.11.2.min.js"></script>
 <script src="../../js/plugins.js"></script>
 <script src="../../js/main.js"></script>
-<script charset="UTF-8">
-	// gets the query and example of getting a query object
-	const queryString = window.location.search;
-	console.log(queryString);
-	const urlParams = new URLSearchParams(queryString);
-	// const sessionID = urlParams.get("session_id");
-	// console.log(sessionID);
-	const uuid = urlParams.get("uuid");
-	console.log("uuid query", uuid);
-	document.getElementById("order-number").innerHTML = uuid;
-</script>
+
 </body>
 </html>
