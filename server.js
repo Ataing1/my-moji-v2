@@ -81,29 +81,36 @@ app.get('/successfulOrder/:uuid', (req, res) => {
 });
 app.get('/viewOrder/:uuid', async (req, res) => {
 	// send name, intro line, mugshot link, rendition link or status no rendition yet
-	const item = await getDynamoItem("abc123");
-	//IF UUID IS NOT IN OUR DATABASE SEND A 404 error, or an oops this page does not exist
-	if (item.rendition_status === "pending-first-rendition") {
-		res.render("pages/notReadyView");
-		return;
-	}
-	if (item.rendition_status === "pending-rendition") { //forward to pending screen to save image loads, and prevent user from inputting new feedback accidentally
-		res.redirect("/successfulFeedback/" + req.params.uuid);
-		return;
-	}
-	let original = await getImageUrlFromS3(req.params.uuid, INITIAL_UPLOAD);
-	let renditionArray = [];
-	for (let i = 0; i < item.renditions.length; i++) {
-		if (item.renditions[i].feedback === "null") { //only show renditions without feedback, different than artist view, which shows every rendition
-			const rendition = await getImageUrlFromS3(req.params.uuid, item.renditions[i].name);
-			renditionArray[i] = {url: rendition.signed, feedback: item.renditions[i].feedback};
+	try{
+		const item = await getDynamoItem(req.params.uuid);
+		//IF UUID IS NOT IN OUR DATABASE SEND A 404 error, or an oops this page does not exist
+		if (item.rendition_status === "pending-first-rendition") {
+			res.render("pages/notReadyView");
+			return;
 		}
+		if (item.rendition_status === "pending-rendition") { //forward to pending screen to save image loads, and prevent user from inputting new feedback accidentally
+			res.redirect("/successfulFeedback/" + req.params.uuid);
+			return;
+		}
+		let original = await getImageUrlFromS3(req.params.uuid, INITIAL_UPLOAD);
+		let renditionArray = [];
+		for (let i = 0; i < item.renditions.length; i++) {
+			if (item.renditions[i].feedback === "null") { //only show renditions without feedback, different than artist view, which shows every rendition
+				const rendition = await getImageUrlFromS3(req.params.uuid, item.renditions[i].name);
+				renditionArray[i] = {url: rendition.signed, feedback: item.renditions[i].feedback};
+			}
+		}
+		res.render("pages/viewOrder", {
+			item: item,
+			originalURL: original.signed,
+			renditionArray: renditionArray,
+		})
+	}catch (error){
+		console.log("uuid doesn't exist");
+		res.render('pages/404')
 	}
-	res.render("pages/viewOrder", {
-		item: item,
-		originalURL: original.signed,
-		renditionArray: renditionArray,
-	})
+
+
 });
 app.get('/artistView/:uuid', async (req, res) => {
 	const item = await getDynamoItem(req.params.uuid);
@@ -196,7 +203,7 @@ app.post('/create-checkout-session', upload.single('upload'), async (req, res) =
 		session_id: session.id,
 		created_at: new Date(Date.now()).toString(),
 		updated_at: new Date(Date.now()).toString(),
-		status: "pending-rendition",
+		status: "pending-first-rendition",
 		renditions: [],
 	}
 	//renditions {"rendition_0": "feedback"}
@@ -264,7 +271,10 @@ app.post('/webhook', async (req, res) => {
 		const artistPageLink = `<${domainURL}/artistView/${uuid}|Artist page>`;
 		const text = `We have a new order from ${name}\n\n\t${email}\n\n\t${artistPageLink}`
 		await publishSlackMessage(text);
-
+		const emailText = `Dear ${name},\n\nThank you for your order! Our artists will get to work right away.` +
+			`We'll email you when your MyMoji is ready (expect to hear back from us within 24-48 hours).\n\nOrder Id: ${uuid}` +
+			"If you have any questions, please email us at support@mymoji.co\n\nThank you,\n\nThe MyMoji Team";
+		sendEmail(email, "Thank you for your order!", emailText);
 	}
 	res.sendStatus(200);
 });
@@ -277,9 +287,13 @@ app.post('/rendition/:uuid', upload.single('upload'), async (req, res) => {
 	console.log("req.body", req.body);
 	console.log("req.file", req.file);
 	const item = await getDynamoItem(req.params.uuid);
+	const {name, email, customer_id} = item;
 	let filename = "rendition_" + item.renditions.length;
 	await uploadImageToS3(filename, req.file, req.params.uuid);
 	const data = await AddRenditionToDatabase(req.params.uuid, filename);
+	const link  = `${process.env.DOMAIN}/viewOrder/${customer_id}`
+	const emailText = `Hi ${name},\n\nOur artists have finished your MyMoji.We can't wait to hear what you think.\n\nYou can check out your MyMoji at ${link}.`
+	sendEmail(email, "Your MyMoji is ready", emailText);
 	res.send(data);
 });
 
@@ -321,6 +335,8 @@ if (port == 4242) {
 } else {
 	app.listen(port, () => console.log('Live using port: ' + port));
 }
+
+
 /*
 let newOrder = {
 		customer_id: uuid,

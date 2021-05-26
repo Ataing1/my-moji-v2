@@ -26,15 +26,15 @@ function sendEmail(send_to,subject, text) {
 	let transporter = nodemailer.createTransport({
 		service: 'gmail',
 		auth: {
-			user: 'ataing1883@gmail.com',
+			user: process.env.EMAIL_USER,
 			pass: process.env.EMAIL_PASS
 		}
 	});
 	let mailOptions = {
-		from: 'support@myMoji.co',
+		from: '',
 		to: send_to,
 		subject: subject,
-		text: text
+		text: text,
 	};
 	transporter.sendMail(mailOptions, function (error, info) {
 		if (error) {
