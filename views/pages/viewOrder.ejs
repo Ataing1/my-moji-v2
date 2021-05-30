@@ -13,7 +13,8 @@
     <!--    intro header-->
     <div class="intro-header">
         <div class="content-image-wrapper">
-            <img class="full-image" id="order-closeup" src=<%= originalURL %> alt="icon"/>
+            <div></div>
+            <img class="full-image image-no-margin" id="order-closeup" src="<%= originalURL %>" alt="icon"/>
             <div class="intro-content">
                 <!--            intro text -->
                 <div class="intro-text">
@@ -31,13 +32,9 @@
                     </p>
                     <button class="button button-on-primary" id="change-mugshot-button" onclick="location.href='/newCloseUp/'+ '<%= item.customer_id %>';" >Change Close-up</button>
                 </div>
-                <!--            button-->
-                <!--				<button id="section1button" onclick="buttonClick()">-->
-                <!--					Create Your Own-->
-                <!--				</button>-->
             </div>
+            <div></div>
         </div>
-        <!--        intro content-->
     </div>
 </section>
 
@@ -51,7 +48,7 @@
         <% renditionArray.forEach(function(rendition) { %>
             <!--            change to grid layout and share space evenly between the two-->
             <div class="rendition-card">
-                <img class="card-image" id="original-image" src=<%= rendition.url %>  alt="icon">
+                <img class="card-image" src="<%= rendition.url %>"  alt="an image">
                 <!--                Heading jumbo-->
                 <button class="button blue" style="align-content: start"
                         onclick="location.href='/downloadView/'+ '<%= item.customer_id %>';">

@@ -57,7 +57,7 @@ p {
 /* || Header and Main Navigation */
 
 .navigation-header {
-	padding: 0 0 0 clamp(1rem, 2.5vw, 2rem);
+	padding: 0;
 	display: flex;
 	flex-direction: row;
 	position: sticky;
@@ -75,7 +75,7 @@ p {
 }
 
 .navigation-footer {
-	padding: 0 clamp(1rem, 2.5vw, 2rem);
+	padding: 0;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -175,7 +175,7 @@ li a:hover {
 	position: absolute;
 	background-color: #f1f1f1;
 	min-width: 160px;
-	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 	z-index: 1;
 	right: 0;
 }
@@ -222,7 +222,7 @@ li a:hover {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
-	flex: 1 1 0px;
+	flex: 1 1 0;
 
 }
 
@@ -446,7 +446,7 @@ input[type="file"] {
 
 #pay {
 	margin: 20px auto 0 0;
-
+	width: 150px;
 }
 
 /*input[type="file"] {*/
@@ -487,9 +487,6 @@ input[type="file"] {
 
 }
 
-#upload-rendition{
-
-}
 
 
 .button:hover,
@@ -593,6 +590,21 @@ input[type="file"] {
 	outline: none;
 	margin: 20px auto 0;
 	border: 2px solid black;
+	max-width: 150px;
+}
+
+.image-upload-wrapper--label-left {
+	background: var(--complementary);
+	text-align: center;
+	display: block;
+	padding: 16px clamp(5px, 20px, 35px);
+	font-weight: bold;
+	font-size: 1rem;
+	border-radius: 10px;
+	outline: none;
+	margin: 20px auto 0 0 ;
+	border: 2px solid black;
+	max-width: 150px;
 }
 
 input[type="file"] {

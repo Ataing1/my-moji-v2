@@ -18,7 +18,7 @@
                 <h3 class=paragraph-bigger>ID: <%= item.customer_id %></h3>
                 <h3 class="paragraph-bigger">Notes: <%- item.notes === "" ? "N/A" : item.notes %></h3>
             </div>
-            <img class="full-image" id="original-image" src=<%= originalURL %> alt="icon"/>
+            <img class="full-image image-no-margin" src="<%= originalURL %>" alt="icon"/>
             <div class="intro-content" id="artist-upload-container">
                 <!--            intro text -->
                 <div class="intro-text-flex">
@@ -53,7 +53,7 @@
 
                 <div class="rendition-card">
                     <!--            change to grid layout and share space evenly between the two-->
-                    <img class="card-image" src=<%= rendition.url %>  alt="icon">
+                    <img class="card-image" src="<%= rendition.url %>"  alt="icon">
                     <div class="rendition-description-wrapper">
                         <p class="rendition-description">Feedback: <%= rendition.feedback %></p>
                     </div>

@@ -12,8 +12,7 @@ const {
 	clearFeedbackInDatabase
 } = require("./serverUtil/dynamo");
 const {sendEmail, publishSlackMessage} = require("./serverUtil/messaging");
-const {v4: uuidV4} = require('uuid')
-const shortId = require('short-uuid');
+require('short-uuid');
 const humanId = require('human-readable-ids').hri;
 
 
@@ -174,7 +173,7 @@ app.post('/create-checkout-session', upload.single('upload'), async (req, res) =
 	const domainURL = process.env.DOMAIN;
 	const pmTypes = (process.env.PAYMENT_METHOD_TYPES || 'card').split(',').map((m) => m.trim());
 	const session = await stripe.checkout.sessions.create({
-		client_reference_id: req.body.uuid,
+		client_reference_id: uuid,
 		customer_email: req.body.email,
 		payment_method_types: pmTypes,
 		mode: 'payment',
@@ -187,13 +186,15 @@ app.post('/create-checkout-session', upload.single('upload'), async (req, res) =
 		metadata: { //use  to match data with database
 			name: req.body.name,
 			email: req.body.email,
-			uuid: req.body.uuid,
+			uuid: uuid,
 		},
+		allow_promotion_codes: true,
 		// ?session_id={CHECKOUT_SESSION_ID} means the redirect will have the session ID set as a query param
 		// success_url: `${domainURL}/successfulOrder?session_id={CHECKOUT_SESSION_ID}&uuid=` + uuid,
 		success_url: `${domainURL}/successfulOrder/`+ uuid,
 		cancel_url: `${domainURL}/newOrder`,
 	});
+	console.log("session object look like this: ", session)
 	await uploadImageToS3(INITIAL_UPLOAD, req.file, uuid);
 	//add sessionID to database object and add object to database.
 	//add date created with date.now
@@ -205,7 +206,7 @@ app.post('/create-checkout-session', upload.single('upload'), async (req, res) =
 		session_id: session.id,
 		created_at: new Date(Date.now()).toString(),
 		updated_at: new Date(Date.now()).toString(),
-		status: "pending-first-rendition",
+		rendition_status: "pending-first-rendition",
 		renditions: [],
 	}
 	//renditions {"rendition_0": "feedback"}
@@ -266,15 +267,15 @@ app.post('/webhook', async (req, res) => {
 	}
 	if (eventType === 'checkout.session.completed') {
 		console.log(`🔔  Payment received!`);
-		sendEmail(data);
 		console.log("data from webhook", data);
-		const {name, email, uuid} = data
+		const metadata = data.object.metadata;
+		const {name, email, uuid} = metadata;
 		const domainURL = process.env.DOMAIN;
 		const artistPageLink = `<${domainURL}/artistView/${uuid}|Artist page>`;
 		const text = `We have a new order from ${name}\n\n\t${email}\n\n\t${artistPageLink}`
 		await publishSlackMessage(text);
 		const emailText = `Dear ${name},\n\nThank you for your order! Our artists will get to work right away.` +
-			`We'll email you when your MyMoji is ready (expect to hear back from us within 24-48 hours).\n\nOrder Id: ${uuid}` +
+			`We'll email you when your MyMoji is ready (expect to hear back from us within 24-48 hours).\n\nOrder Id: ${uuid}\n` +
 			"If you have any questions, please email us at support@mymoji.co\n\nThank you,\n\nThe MyMoji Team";
 		sendEmail(email, "Thank you for your order!", emailText);
 	}
@@ -327,6 +328,7 @@ app.post('/contact', upload.none, async(req, res) =>{
 	console.log("contact api called");
 	const {text} = req.body;
 	sendEmail("support@mymoji.co", "A user has contacted MyMoji", text);
+	res.send(200);
 });
 
 

@@ -4,9 +4,19 @@
 	}
 
 	#original-image {
-		max-width: 40%;
+		max-width: 30%;
 		margin: 0 auto;
 		padding: 20px;
+	}
+
+	.card-image{
+		max-width: 30%;
+		margin: 0 auto;
+		padding: 20px;
+	}
+
+	.image-no-margin{
+		max-width: 40%;
 	}
 
 	.order-form-inner-wrapper{
@@ -103,12 +113,6 @@
 		margin-bottom: 2em;
 	}
 
-	#original-image {
-		max-width: 40%;
-		margin: 0;
-		padding: 20px;
-	}
-
 	/*  ==========
 	INSTRUCTION STYLING
 	========== */
@@ -144,6 +148,13 @@
 
 	}
 
+	.image-no-margin{
+		max-width: 35%;
+		margin: 0;
+	}
+
+
+
 
 
 }
@@ -166,6 +177,10 @@
 	.navigation-footer{
 		flex-direction: row;
 		justify-content: space-between;
+	}
+
+	#order-closeup{
+		max-width: 30%;
 	}
 
 
