@@ -52,14 +52,14 @@ async function AddRenditionToDatabase(uuid, file_name) {
 
 }
 
-async function AddFeedbackToDatabase(uuid, feedback) {
+async function AddFeedbackToDatabase(uuid, feedback, index) {
 	// testUpdate();
 	// return;
 	console.log(typeof (feedback), typeof (uuid), uuid, feedback);
 	let updateExpression = "SET ";
 	let updateValues = {};
 	let attributeNames = {};
-	updateExpression += "#renditions[0].feedback = :feedback";
+	updateExpression += `#renditions[${index}].feedback = :feedback`;
 	updateValues[":feedback"] = {"S": feedback}; //turns value in items[key[i]]
 	attributeNames["#renditions"] = "renditions";
 	updateExpression += ", ";

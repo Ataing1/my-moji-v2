@@ -51,10 +51,10 @@
                 <img class="card-image" src="<%= rendition.url %>"  alt="an image">
                 <!--                Heading jumbo-->
                 <button class="button blue" style="align-content: start"
-                        onclick="location.href='/downloadView/'+ '<%= item.customer_id %>';">
+                        onclick="location.href='/downloadView/'+ '<%= item.customer_id %>' + '/'+ '<%=rendition.rendition_number%>';">
                     Looks great!
                 </button>
-                <button class="button" onclick="location.href='/feedbackView/'+ '<%= item.customer_id %>';">
+                <button class="button" onclick="location.href='/feedbackView/'+ '<%= item.customer_id %>' + '/'+ '<%=rendition.rendition_number%>';">
                     Request Changes
                 </button>
             </div>

@@ -96,7 +96,7 @@ app.get('/viewOrder/:uuid', async (req, res) => {
 		for (let i = 0; i < item.renditions.length; i++) {
 			if (item.renditions[i].feedback === "null") { //only show renditions without feedback, different than artist view, which shows every rendition
 				const rendition = await getImageUrlFromS3(req.params.uuid, item.renditions[i].name);
-				renditionArray[i] = {url: rendition.signed, feedback: item.renditions[i].feedback};
+				renditionArray[i] = {url: rendition.signed, feedback: item.renditions[i].feedback, rendition_number: i};
 			}
 		}
 		res.render("pages/viewOrder", {
@@ -129,19 +129,23 @@ app.get('/artistView/:uuid', async (req, res) => {
 		renditionArray: renditionArray,
 	})
 });
-app.get('/downloadView/:uuid', async (req, res) => {
-	res.render("pages/download");
+app.get('/downloadView/:uuid/:renditionNumber', async (req, res) => {
+	const item = await getDynamoItem(req.params.uuid);
+	const rendition = await getImageUrlFromS3(req.params.uuid, item.renditions[req.params.renditionNumber].name);
+	const renditionUrl = rendition.signed;
+	res.render("pages/download", {downloadUrl: renditionUrl});
 });
 app.get('/successfulFeedback/:uuid', async (req, res) => {
 	res.render("pages/successfulFeedback", {uuid: req.params.uuid});
 });
-app.get('/feedbackView/:uuid', async (req, res) => {
+
+app.get('/feedbackView/:uuid/:renditionNumber', async (req, res) => {
 	//send latest rendition url to display
 	const item = await getDynamoItem(req.params.uuid);
 	//not preventing resubmissions so that the user can edit their feedback by pressing the back button
-	const renditionObject = await getImageUrlFromS3(req.params.uuid, item.renditions[0].name);
+	const renditionObject = await getImageUrlFromS3(req.params.uuid, item.renditions[req.params.renditionNumber].name);
 	const renditionURL = renditionObject.signed;
-	res.render("pages/feedback", {renditionURL: renditionURL, uuid: item.customer_id});
+	res.render("pages/feedback", {renditionURL: renditionURL, uuid: item.customer_id, renditionNumber: req.params.renditionNumber});
 });
 app.get('/newCloseUp/:uuid', async (req, res) => {
 	const item = await getDynamoItem(req.params.uuid);
@@ -297,22 +301,22 @@ app.post('/rendition/:uuid', upload.single('upload'), async (req, res) => {
 	const link  = `${process.env.DOMAIN}/viewOrder/${customer_id}`
 	const emailText = `Hi ${name},\n\nOur artists have finished your MyMoji.We can't wait to hear what you think.\n\nYou can check out your MyMoji at ${link}.`
 	sendEmail(email, "Your MyMoji is ready", emailText);
-	res.send(data);
+	res.sendStatus(200);
 });
 
 /**
  * Action for when the user uploads feedback
  */
-app.post('/feedback/:uuid', upload.none(), async (req, res) => {
+app.post('/feedback/:uuid/:renditionNumber', upload.none(), async (req, res) => {
 	console.log("uploading user feedback");
 	console.log("req.body", req.body);
 	console.log("req id", req.params.uuid);
 	const {feedback} = req.body;
 	const processedFeedback = feedback.replace(/(\r\n|\n|\r)/gm, " ")
 	console.log("feedback", processedFeedback, typeof (processedFeedback));
-	const data = await AddFeedbackToDatabase(req.params.uuid, feedback);
+	const data = await AddFeedbackToDatabase(req.params.uuid, feedback, req.params.renditionNumber);
 	const item = await getDynamoItem(req.params.uuid);
-	console.log("item recieved", item);
+	console.log("item received", item);
 	const {name, email, customer_id} = item
 	const domainURL = process.env.DOMAIN;
 	const artistPageLink = `<${domainURL}/artistView/${customer_id}|Artist page>`;
@@ -330,6 +334,10 @@ app.post('/contact', upload.none, async(req, res) =>{
 	sendEmail("support@mymoji.co", "A user has contacted MyMoji", text);
 	res.send(200);
 });
+
+app.get('/downloadImage', (req, res)=>{
+	res.download("")
+})
 
 
 function checkEnv() {

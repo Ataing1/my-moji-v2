@@ -627,3 +627,7 @@ input[type="file"] {
 #original-image{
 	margin: 0 auto;
 }
+
+.temp-download{
+	width: 100%;
+}

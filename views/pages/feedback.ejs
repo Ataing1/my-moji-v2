@@ -32,6 +32,7 @@
 
 <%- include('../partials/footer'); %>
 <script> let UUID = "<%=uuid%>"</script>
+<script> let renditionNumber = "<%=renditionNumber%>"</script>
 <script charset="UTF-8">
 
     let checkoutButton = document.getElementById("submit");
@@ -45,7 +46,7 @@
 		formData.append("feedback", feedback.value);
 
 
-		fetch(`/feedback/${UUID}`, {
+		fetch(`/feedback/${UUID}/${renditionNumber}`, {
 			method: 'POST',
 			body: formData
 
