@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Order</title>
+    <%- include('../partials/head'); %>
+
+</head>
+<body>
+<%- include('../partials/header'); %>
+<!--rendition image-->
+<!--"what would you like to tell the artist?-->
+<!--textbox-->
+<section class="section">
+
+    <div class="order-form">
+        <div class="order-form-inner-wrapper">
+            <div class="input-wrapper">
+                <p class="paragraph-bigger">What would you like to tell us?</p>
+                <label class="label" for="other-information"></label>
+                <textarea id="other-information" type="text" class="text-field" rows="4" cols="50"></textarea>
+                <button class="button blue" id="submit">Submit</button>
+            </div>
+
+        </div>
+    </div>
+
+
+</section>
+
+<%- include('../partials/footer'); %>
+<script charset="UTF-8">
+
+	let checkoutButton = document.getElementById("submit");
+	checkoutButton.addEventListener('click', function (e) {
+
+		e.preventDefault();
+
+		let formData = new FormData();
+		const text = document.getElementById("other-information");
+
+		formData.append("text", text.value);
+
+
+		fetch(`/contact`, {
+			method: 'POST',
+			body: formData
+
+		})
+			.then(function (response) {
+				console.log(response);
+				location.href = '/index';
+				return response.json();
+			})
+			.catch(function (error) {
+				console.error('Error:', error);
+			});
+	});
+</script>
+</body>

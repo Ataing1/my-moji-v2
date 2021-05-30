@@ -29,6 +29,7 @@ h3 {
 
 p {
 	font-size: .75em;
+
 }
 
 /* || Typography */
@@ -41,13 +42,16 @@ p {
 
 .paragraph-bigger {
 	display: block;
-	margin-bottom: 10px;
+	/*margin-bottom: 10px;*/
 	position: static;
 	font-weight: normal;
+	word-wrap: break-word;
+	max-width: 350px;
+
 }
 
 .work-heading {
-	margin: 10px auto 20px;
+	margin: 12px auto;
 }
 
 /* || Header and Main Navigation */
@@ -81,7 +85,8 @@ p {
 	z-index: 1000;
 	background: white;
 	border-top: var(--primary) 2px solid;
-	margin-top: 2em;
+	margin-top: 3em;
+	margin-bottom: 20px;
 }
 
 .footer-box {
@@ -90,10 +95,13 @@ p {
 	justify-content: center;
 }
 
-.footer-box:first-child > span { margin-right: auto; }
+.footer-box:first-child > span {
+	margin-right: auto;
+}
 
-.footer-box:last-child  > span { margin-left: auto;  }
-
+.footer-box:last-child > span {
+	margin-left: auto;
+}
 
 
 .logo-image {
@@ -137,10 +145,11 @@ li a:hover {
 }
 
 /* Dropdown Button */
-.dropbtn {
+.dropdown-button {
 	background-color: var(--logo_color);
 
 	color: white;
+	font-weight: bold;
 	margin: 14px 16px;
 	padding: 16px;
 	font-size: 16px;
@@ -150,7 +159,7 @@ li a:hover {
 }
 
 /* Dropdown button on hover & focus */
-.dropbtn:hover, .dropbtn:focus {
+.dropdown-button:hover, .dropdown-button:focus {
 	background-color: #2980B9;
 }
 
@@ -191,21 +200,16 @@ li a:hover {
 	display: block;
 }
 
-.fab{
+.fab {
 	color: var(--logo_color);
 }
+
 /* Add a hover effect if you want */
 .fab:hover {
 	opacity: 0.7;
 }
 
-/* Set a specific color for each brand */
-
-
-
-/*  ==========
-		Layout
-		========== */
+/* || unspecified*/
 .section {
 	margin: 0 auto;
 	position: static;
@@ -217,6 +221,9 @@ li a:hover {
 .content-image-wrapper {
 	display: flex;
 	flex-direction: column;
+	justify-content: space-between;
+	flex: 1 1 0px;
+
 }
 
 .intro-content {
@@ -231,23 +238,24 @@ li a:hover {
 	text-align: center;
 
 }
-
-.spacer {
-	height: 50px;
-}
-
 /*  ==========
 	INTRO STYLING CSS
 	========== */
 
 .intro-header {
-	margin-bottom: 100px;
 	align-items: center;
 	justify-content: center;
-	display: flex;
+	display: block;
 	position: static;
 	background-color: var(--primary);
+}
+
+.intro-header-round-bottom{
 	border-radius: 0 0 10px 10px;
+}
+
+.intro-header-round-all{
+	border-radius: 10px;
 }
 
 .intro-text {
@@ -257,7 +265,12 @@ li a:hover {
 	margin-bottom: 35px;
 	width: 80%;
 	position: static;
+}
 
+.intro-text-flex{
+	display: flex;
+	flex-direction: column;
+	align-items: start;
 }
 
 
@@ -265,8 +278,8 @@ li a:hover {
 	INSTRUCTION STYLING
 	========== */
 .work-heading-wrapper {
-	margin-bottom: 60px;
-	margin-top: 60px;
+	margin-bottom: 30px;
+	margin-top: 30px;
 	display: block;
 	text-align: center;
 }
@@ -287,7 +300,6 @@ li a:hover {
 .instruction-wrap {
 	flex-shrink: initial;
 	display: block;
-	padding-bottom: 30px;
 	margin: 0 auto;
 	width: 85%;
 }
@@ -320,7 +332,9 @@ li a:hover {
 
 .customer-info {
 	text-align: center;
+	margin: auto;
 }
+
 
 /*  ==========
 	NEW ORDER CSS
@@ -431,7 +445,6 @@ input[type="file"] {
 }
 
 #pay {
-	width: 30%;
 	margin: 20px auto 0 0;
 
 }
@@ -446,7 +459,7 @@ input[type="file"] {
 	grid-row-gap: 50px;
 	grid-column-gap: 50px;
 	padding-left: 0;
-	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
 	grid-auto-rows: 1fr;
 	border-radius: 5px;
 }
@@ -470,6 +483,12 @@ input[type="file"] {
 	border-radius: 10px;
 	outline: none;
 	margin: 20px auto;
+
+
+}
+
+#upload-rendition{
+
 }
 
 
@@ -479,9 +498,16 @@ input[type="file"] {
 }
 
 .blue {
-	background-color: var(--primary);
+	background-color: var(--secondary);
 	color: black;
 }
+
+.button-on-primary{
+	background-color: var(--complementary);
+	color: black;
+}
+
+
 
 .image-box {
 	display: grid;
@@ -491,8 +517,9 @@ input[type="file"] {
 .full-image {
 	width: clamp(60%, 70%, 70%);
 	height: auto;
-	margin: auto;
+	margin: 0 auto;
 	padding: 40px;
+	border-radius: 70px;
 }
 
 .outline {
@@ -511,7 +538,7 @@ input[type="file"] {
 	display: flex;
 	flex-direction: column;
 	/* Add shadows to create the "card" effect */
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.15);
 	transition: 0.3s;
 	border: lightblue 1px solid;
 	text-align: center;
@@ -554,16 +581,37 @@ input[type="file"] {
 	border: 3px solid red;
 }
 
-.image-upload-wrapper {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	align-content: center;
-}
 
 .image-upload-wrapper--label {
-	flex-grow: 4;
+	background: var(--complementary);
+	text-align: center;
+	display: block;
+	padding: 16px clamp(5px, 20px, 35px);
+	font-weight: bold;
+	font-size: 1rem;
+	border-radius: 10px;
+	outline: none;
+	margin: 20px auto 0;
+	border: 2px solid black;
 }
 
+input[type="file"] {
+	display: none;
+}
 
+#section2button,
+#section3button{
+	margin: 50px auto;
+}
 
+.artist-information-grid{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	text-align: center;
+	align-items: center;
+}
+
+#original-image{
+	margin: 0 auto;
+}

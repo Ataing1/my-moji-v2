@@ -109,8 +109,6 @@ app.get('/viewOrder/:uuid', async (req, res) => {
 		console.log("uuid doesn't exist");
 		res.render('pages/404')
 	}
-
-
 });
 app.get('/artistView/:uuid', async (req, res) => {
 	const item = await getDynamoItem(req.params.uuid);
@@ -152,6 +150,10 @@ app.get('/newCloseUp/:uuid', async (req, res) => {
 	const originalUrl = originalObject.signed;
 	res.render("pages/newMugshotView", {originalUrl: originalUrl, uuid: item.customer_id});
 })
+
+app.get('/contactView', async (req, res)=>{
+	res.render("pages/contactView");
+});
 
 /*	===========
 	Utilities
@@ -318,6 +320,14 @@ app.post('/feedback/:uuid', upload.none(), async (req, res) => {
 	res.send(data);
 })
 
+/**
+ * Action for when the user contacts MyMoji
+ */
+app.post('/contact', upload.none, async(req, res) =>{
+	console.log("contact api called");
+	const {text} = req.body;
+	sendEmail("support@mymoji.co", "A user has contacted MyMoji", text);
+});
 
 
 function checkEnv() {

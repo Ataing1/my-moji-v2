@@ -4,7 +4,7 @@
 	}
 
 	#original-image {
-		max-width: 30%;
+		max-width: 40%;
 		margin: 0 auto;
 		padding: 20px;
 	}
@@ -69,7 +69,24 @@
 	========== */
 	.intro-content {
 		text-align: left;
+		margin-left: 30px;
 	}
+
+	.customer-info{
+		text-align: left;
+		margin: auto 0;
+		padding: 10px;
+		border-top: var(--logo_color) 2px solid;
+		border-bottom: var(--logo_color) 2px solid;
+	}
+
+	#artist-upload-container{
+		margin: auto 0;
+		padding: 10px;
+		border-top: var(--logo_color) 2px solid;
+		border-bottom: var(--logo_color) 2px solid;
+	}
+
 
 	#section1button ,
 	#change-mugshot-button{
@@ -78,8 +95,19 @@
 
 	.content-image-wrapper {
 		flex-direction: row;
+		align-items: center;
 	}
 
+	.work-heading-wrapper{
+		margin-top: 2em;
+		margin-bottom: 2em;
+	}
+
+	#original-image {
+		max-width: 40%;
+		margin: 0;
+		padding: 20px;
+	}
 
 	/*  ==========
 	INSTRUCTION STYLING
@@ -113,12 +141,9 @@
 	========== */
 	.full-image {
 		width: clamp(40%, 45%, 50%);
+
 	}
 
-
-	#artist-upload-container {
-		margin: 0 auto 0 0;
-	}
 
 
 }

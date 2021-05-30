@@ -29,7 +29,7 @@
                     <p class="paragraph-bigger">
                         If you have any questions you can reach us at contact@mymoji.com
                     </p>
-                    <button class="button" id="change-mugshot-button" onclick="location.href='/newCloseUp/'+ '<%= item.customer_id %>';" >Change Close-up</button>
+                    <button class="button button-on-primary" id="change-mugshot-button" onclick="location.href='/newCloseUp/'+ '<%= item.customer_id %>';" >Change Close-up</button>
                 </div>
                 <!--            button-->
                 <!--				<button id="section1button" onclick="buttonClick()">-->
@@ -41,10 +41,12 @@
     </div>
 </section>
 
+<div class="work-heading-wrapper">
+    <h2 class="work-heading">Renditions</h2>
+</div>
+
 <section class="section">
-    <div class="work-heading-wrapper">
-        <h2 class="work-heading">Renditions</h2>
-    </div>
+
     <ul class="grid-container">
         <% renditionArray.forEach(function(rendition) { %>
             <!--            change to grid layout and share space evenly between the two-->
