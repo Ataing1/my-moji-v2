@@ -20,7 +20,7 @@ h1 {
 }
 
 h2 {
-	font-size: 1.6em
+	font-size: 1.5em
 }
 
 h3 {
@@ -29,8 +29,14 @@ h3 {
 
 p {
 	font-size: .75em;
-
 }
+
+button,
+label,
+a{
+	cursor: pointer;
+}
+
 
 /* || Typography */
 
@@ -54,6 +60,10 @@ p {
 	margin: 12px auto;
 }
 
+.article-width{
+	margin: 0 auto;
+	max-width: 75ch;
+}
 /* || Header and Main Navigation */
 
 .navigation-header {
@@ -483,6 +493,7 @@ input[type="file"] {
 	border-radius: 10px;
 	outline: none;
 	margin: 20px auto;
+	cursor: pointer;
 
 
 }
@@ -534,6 +545,7 @@ input[type="file"] {
 .rendition-card {
 	display: flex;
 	flex-direction: column;
+	justify-content: space-between;
 	/* Add shadows to create the "card" effect */
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.15);
 	transition: 0.3s;

@@ -158,6 +158,17 @@ app.get('/contactView', async (req, res)=>{
 	res.render("pages/contactView");
 });
 
+app.get('/privacyView', async (req, res)=>{
+	res.render("pages/privacyView");
+});
+
+app.get('/termsView', async (req, res)=>{
+	res.render("pages/termsView");
+});
+
+
+
+
 /*	===========
 	Utilities
  	===========
