@@ -1,13 +1,3 @@
-/* Toggle between adding and removing the "responsive" class to topnav when the user clicks on the icon */
-function updateNavBar() {
-	let x = document.getElementById("myTopnav");
-	if (x.className === "topnav") {
-		x.className += " responsive";
-	} else {
-		x.className = "topnav";
-	}
-}
-
 function validateFileUpload() {
 	let valid = true;
 	let fuData = document.getElementById('image-upload');
@@ -53,12 +43,12 @@ function validateFileUpload() {
 /* When the user clicks on the button,
 toggle between hiding and showing the dropdown content */
 function showDropDown() {
-	document.getElementById("myDropdown").classList.toggle("show");
+	document.getElementById("myDropdown").classList.add("show");
 }
 
 // Close the dropdown menu if the user clicks outside of it
 window.onclick = function(event) {
-	if (!event.target.matches('.dropbtn')) {
+	if (!event.target.matches('.dropdown-button')) {
 		var dropdowns = document.getElementsByClassName("dropdown-content");
 		var i;
 		for (i = 0; i < dropdowns.length; i++) {
