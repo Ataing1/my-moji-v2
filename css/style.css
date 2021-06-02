@@ -41,8 +41,7 @@ a{
 /* || Typography */
 
 .heading-jumbo {
-	margin-top: 10px;
-	margin-bottom: 10px;
+	margin: 0;
 	position: static;
 }
 
@@ -271,9 +270,7 @@ li a:hover {
 
 .intro-text {
 	display: block;
-	margin-left: auto;
-	margin-right: auto;
-	margin-bottom: 35px;
+	margin: 35px auto;
 	width: 80%;
 	position: static;
 }
