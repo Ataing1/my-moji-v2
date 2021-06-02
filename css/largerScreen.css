@@ -1,6 +1,7 @@
 @media screen and (min-width: 46.25em) {
 	.grid-container {
 		margin: 0 auto;
+		padding: 20px;
 	}
 
 	#original-image {

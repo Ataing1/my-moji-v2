@@ -48,7 +48,7 @@
 </div>
 <section class="section">
     <% if (item.renditions.length > 0){ %>
-        <ul class="grid-container">
+        <div class="grid-container">
             <% renditionArray.forEach(function(rendition) { %>
 
                 <div class="rendition-card">
@@ -61,7 +61,7 @@
                 </div>
 
             <% }) %>
-        </ul>
+        </div>
     <% }else{ %>
         <p class="paragraph-bigger" style="text-align: center">Upload your first Emoji</p>
     <% } %>
