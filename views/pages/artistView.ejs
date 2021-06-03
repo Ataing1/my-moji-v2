@@ -104,11 +104,12 @@
 		})
 			.then(function (response) {
 				console.log(response);
-				alert("Image uploaded successfully")
+				location.href='/artistView/' + '<%- item.customer_id %>';
 				return response.json();
 			})
 			.catch(function (error) {
 				console.error('Error:', error);
+				alert("OOPS! Something went wrong");
 			});
 	});
 

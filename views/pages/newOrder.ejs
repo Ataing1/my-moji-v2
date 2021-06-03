@@ -108,8 +108,8 @@
 			const compressedFile = await imageCompression(imageFile, options);
 			formData.append("upload", compressedFile);
 		} catch (error) {
-			alert(error);
 			console.log(error);
+			alert("OOPS! Something went wrong");
 		}
 
 
