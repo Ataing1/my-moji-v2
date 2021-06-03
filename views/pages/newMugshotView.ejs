@@ -20,11 +20,11 @@
             <div class="input-wrapper">
                 <p class="paragraph-bigger ">Upload a new close-up.</p>
                 <img class="preview-image" src="#" id="blah" alt="">
-                <div class="image-upload-wrapper">
+                <div class="intro-text-flex">
                     <input type="file" name="upload" id="image-upload" accept="image/*"
                            placeholder="Select File" required
                            onchange="return validateFileUpload()">
-                    <label for="image-upload" class="image-upload-wrapper--label">Select File</label>
+                    <label for="image-upload" class="image-upload-wrapper--label-left">Select File</label>
 
                 </div>
 
@@ -41,7 +41,7 @@
 <script charset="UTF-8">
 
 	let checkoutButton = document.getElementById("pay");
-	checkoutButton.addEventListener('click', function (e) {
+	checkoutButton.addEventListener('click', async function (e) {
 		e.preventDefault();
 		if (!validateFileUpload()) {
 			console.log("input invalid returning");
@@ -49,13 +49,26 @@
 		} else {
 			console.log('input valid continuing to fetch');
 		}
-		if(!confirm('Warning: Uploading a new close-up will remove all past renditions')){
+		if (!confirm('Warning: Uploading a new close-up will remove all past renditions')) {
 			return;
-        }
+		}
 
 		let formData = new FormData();
 		let fuData = document.getElementById('image-upload');
-		formData.append("upload", fuData.files[0]);
+
+		const imageFile = fuData.files[0];
+
+		const options = {
+			maxSizeMB: 2,
+			maxWidthOrHeight: 1920,
+			useWebWorker: true
+		}
+		try {
+			const compressedFile = await imageCompression(imageFile, options);
+			formData.append("upload", compressedFile);
+		} catch (error) {
+			console.log(error);
+		}
 
 
 		fetch(`/newMugshot/${UUID}`, {

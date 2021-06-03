@@ -5,20 +5,12 @@ function validateFileUpload() {
 
 	//To check if user upload any file
 	if (FileUploadPath === '') {
-		fuData.setCustomValidity("Please upload an image");
-		fuData.classList.add('is-invalid');
+		alert("please upload an image");
 		valid = false;
 	} else {
-		fuData.setCustomValidity("");
-		fuData.classList.remove('is-invalid');
-		let Extension = FileUploadPath.substring(
-			FileUploadPath.lastIndexOf('.') + 1).toLowerCase();
+		let Extension = FileUploadPath.substring(FileUploadPath.lastIndexOf('.') + 1).toLowerCase();
 
-		//The file uploaded is an image
-
-		if (Extension === "gif" || Extension === "png" || Extension === "bmp"
-			|| Extension === "jpeg" || Extension === "jpg") {
-
+		if (Extension === "gif" || Extension === "png" || Extension === "bmp" || Extension === "jpeg" || Extension === "jpg") {
 			// To Display
 			if (fuData.files && fuData.files[0]) {
 				let reader = new FileReader();
@@ -27,13 +19,9 @@ function validateFileUpload() {
 				}
 				reader.readAsDataURL(fuData.files[0]);
 			}
-
 		}
-
-		//The file upload is NOT an image
 		else {
-			fuData.setCustomValidity("Please upload an image");
-			fuData.classList.add('is-invalid');
+			alert("please upload an image");
 			valid = false;
 		}
 	}
@@ -47,7 +35,7 @@ function showDropDown() {
 }
 
 // Close the dropdown menu if the user clicks outside of it
-window.onclick = function(event) {
+window.onclick = function (event) {
 	if (!event.target.matches('.dropdown-button')) {
 		var dropdowns = document.getElementsByClassName("dropdown-content");
 		var i;

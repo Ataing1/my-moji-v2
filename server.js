@@ -181,8 +181,8 @@ app.get('/checkout-session', async (req, res) => {
 });
 app.post('/create-checkout-session', upload.single('upload'), async (req, res) => {
 	console.log("create checkout session called");
-	// console.log("req.body", req.body);
-	// console.log("req.file", req.file);
+	console.log("req.body", req.body);
+	console.log("req.file", req.file);
 	// const uuid = devMode ? "abc123" : uuidV4(); //if devmode: hard coded value, else a unique ID
 	const uuid =  humanId.random();
 	const domainURL = process.env.DOMAIN;
@@ -209,7 +209,7 @@ app.post('/create-checkout-session', upload.single('upload'), async (req, res) =
 		success_url: `${domainURL}/successfulOrder/`+ uuid,
 		cancel_url: `${domainURL}/newOrder`,
 	});
-	console.log("session object look like this: ", session)
+	// console.log("session object look like this: ", session)
 	await uploadImageToS3(INITIAL_UPLOAD, req.file, uuid);
 	//add sessionID to database object and add object to database.
 	//add date created with date.now

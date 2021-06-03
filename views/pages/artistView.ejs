@@ -67,11 +67,12 @@
     <% } %>
 </section>
 <%- include('../partials/footer'); %>
+
 <script charset="UTF-8">
 
 	let uploadButton = document.getElementById('upload-rendition');
 
-	uploadButton.addEventListener('click', function (e) {
+	uploadButton.addEventListener('click', async function (e) {
 		if (!validateFileUpload()) {
 			console.log("input invalid returning");
 			return;
@@ -83,9 +84,19 @@
 		let formData = new FormData();
 		let fuData = document.getElementById('image-upload');
 
-		formData.append("upload", fuData.files[0]);
-		formData.append("renditionCount", "<%- item.renditions.length %>");
-		location.href
+		const imageFile = fuData.files[0];
+
+		const options = {
+			maxSizeMB: 2,
+			maxWidthOrHeight: 1920,
+			useWebWorker: true
+		}
+		try {
+			const compressedFile = await imageCompression(imageFile, options);
+			formData.append("upload", compressedFile);
+		} catch (error) {
+			console.log(error);
+		}
 		//same as customer_id same as uuid
 		fetch('/rendition/' + '<%- item.customer_id %>', {
 			method: 'POST',
@@ -103,9 +114,6 @@
 
 
 </script>
-
-<script src="../../js/vendor/modernizr-3.11.2.min.js"></script>
-<script src="../../js/plugins.js"></script>
-<script src="../../js/main.js"></script>
+<%- include('../partials/scripts');%>
 </body>
 </html>

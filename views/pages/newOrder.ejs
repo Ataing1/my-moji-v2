@@ -61,9 +61,7 @@
 
 </section>
 <%- include('../partials/footer'); %>
-<script src="../../js/vendor/modernizr-3.11.2.min.js"></script>
-<script src="../../js/plugins.js"></script>
-<script src="../../js/main.js"></script>
+<%- include('../partials/scripts');%>
 
 <script src="https://js.stripe.com/v3/"></script>
 <script charset="UTF-8">
@@ -80,7 +78,7 @@
 
 	let checkoutButton = document.getElementById('pay');
 
-	checkoutButton.addEventListener('click', function (e) {
+	checkoutButton.addEventListener('click', async function (e) {
 		if (!validateForm()) {
 			console.log("input invalid returning");
 			return;
@@ -93,12 +91,25 @@
 		const name = document.getElementById("order-name");
 		const email = document.getElementById("order-email");
 		const notes = document.getElementById("other-information");
-		let fuData = document.getElementById('image-upload');
+		const fuData = document.getElementById('image-upload');
+
+		const imageFile = fuData.files[0];
 
 		formData.append("name", name.value);
 		formData.append("email", email.value);
 		formData.append("notes", notes.value);
-		formData.append("upload", fuData.files[0]);
+
+		const options = {
+			maxSizeMB: 2,
+			maxWidthOrHeight: 1920,
+			useWebWorker: true
+		}
+		try {
+			const compressedFile = await imageCompression(imageFile, options);
+			formData.append("upload", compressedFile);
+		} catch (error) {
+			console.log(error);
+		}
 
 
 		fetch('/create-checkout-session', {
@@ -126,6 +137,8 @@
 				console.error('Error:', error);
 			});
 	});
+
+
 
 	function validateForm() {
 		let valid = true;
