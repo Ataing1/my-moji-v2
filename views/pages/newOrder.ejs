@@ -100,7 +100,7 @@
 		formData.append("notes", notes.value);
 
 		const options = {
-			maxSizeMB: 2,
+			maxSizeMB: 1,
 			maxWidthOrHeight: 1920,
 			useWebWorker: true
 		}
@@ -108,6 +108,7 @@
 			const compressedFile = await imageCompression(imageFile, options);
 			formData.append("upload", compressedFile);
 		} catch (error) {
+			alert(error);
 			console.log(error);
 		}
 
