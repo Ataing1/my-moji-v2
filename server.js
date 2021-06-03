@@ -66,7 +66,7 @@ app.get('/config', async (req, res) => {
 	Page Routes
  	===========
  */
-app.get('/', (req, res) => {
+app.get('/',(req, res) => {
 	res.render('pages/index', {active: ""});
 });
 app.get('/aboutView', async (req, res) => {
