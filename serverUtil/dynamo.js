@@ -16,7 +16,7 @@ const TABLE_NAME = "orders";
  */
 async function AddRenditionToDatabase(uuid, file_name) {
 
-	console.log(typeof (uuid), uuid, file_name);
+
 	let updateExpression = "SET ";
 	let updateValues = {};
 	let newRendition = {
@@ -43,7 +43,7 @@ async function AddRenditionToDatabase(uuid, file_name) {
 	};
 	const client = new DynamoDBClient({region: REGION});
 	try {
-		const data = await client.send(new UpdateItemCommand(params));
+		await client.send(new UpdateItemCommand(params));
 		// console.log("Success - updated item in database", data);
 		console.log("Success - updated item in database");
 	} catch (err) {
@@ -55,7 +55,6 @@ async function AddRenditionToDatabase(uuid, file_name) {
 async function AddFeedbackToDatabase(uuid, feedback, index) {
 	// testUpdate();
 	// return;
-	console.log(typeof (feedback), typeof (uuid), uuid, feedback);
 	let updateExpression = "SET ";
 	let updateValues = {};
 	let attributeNames = {};
@@ -82,7 +81,7 @@ async function AddFeedbackToDatabase(uuid, feedback, index) {
 	};
 	const client = new DynamoDBClient({region: REGION});
 	try {
-		const data = await client.send(new UpdateItemCommand(params));
+		await client.send(new UpdateItemCommand(params));
 		// console.log("Success - updated item in database", data);
 		console.log("Success - updated item in database");
 	} catch (err) {
@@ -123,7 +122,7 @@ async function clearFeedbackInDatabase(uuid,  indexesToDelete) {
 	};
 	const client = new DynamoDBClient({region: REGION});
 	try {
-		const data = await client.send(new UpdateItemCommand(params));
+		await client.send(new UpdateItemCommand(params));
 		// console.log("Success - updated item in database", data);
 		console.log("Success - updated items in database");
 	} catch (err) {
@@ -139,7 +138,7 @@ async function putItemInDatabase(data) {
 	};
 	const client = new DynamoDBClient({region: REGION});
 	try {
-		const result = await client.send(new PutItemCommand(params));
+		await client.send(new PutItemCommand(params));
 		// console.log("success: put item in database", result);
 		console.log("success: put item in database");
 	} catch (err) {
@@ -148,7 +147,6 @@ async function putItemInDatabase(data) {
 }
 
 async function getDynamoItem(uuid) {
-	console.log("get item", uuid);
 	const params = {
 		TableName: TABLE_NAME,
 		Key: marshall({
