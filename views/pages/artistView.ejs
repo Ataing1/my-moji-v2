@@ -50,16 +50,13 @@
     <% if (item.renditions.length > 0){ %>
         <div class="grid-container">
             <% renditionArray.forEach(function(rendition) { %>
-
                 <div class="rendition-card">
                     <!--            change to grid layout and share space evenly between the two-->
                     <img class="card-image" src="<%= rendition.url %>"  alt="icon">
                     <div class="rendition-description-wrapper">
                         <p class="rendition-description">Feedback: <%= rendition.feedback %></p>
                     </div>
-
                 </div>
-
             <% }) %>
         </div>
     <% }else{ %>

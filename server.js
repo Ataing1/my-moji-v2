@@ -158,8 +158,8 @@ app.get('/artistView/:uuid', async (req, res) => {
 		console.error(error);
 		res.render('pages/404');
 	}
-
 });
+
 app.get('/downloadView/:uuid/:renditionNumber', async (req, res) => {
 	try{
 		const item = await getDynamoItem(req.params.uuid);
