@@ -301,7 +301,7 @@ app.post('/webhook', async (req, res) => {
 		const artistPageLink = `<${domainURL}/artistView/${uuid}|Artist page>`;
 		const text = `We have a new order from ${name}\n\n\t${email}\n\n\t${artistPageLink}`
 		await publishSlackMessage(text);
-		const emailText = `Dear ${name},\n\nThank you for your order! Our artists will get to work right away.` +
+		const emailText = `Dear ${name},\n\nThank you for your order! Our artists will get to work right away. ` +
 			`We'll email you when your MyMoji is ready (expect to hear back from us within 24-48 hours).\n\nOrder Id: ${uuid}\n` +
 			"If you have any questions, please email us at support@mymoji.co\n\nThank you,\n\nThe MyMoji Team";
 		sendEmail(email, "Thank you for your order!", emailText);
@@ -323,7 +323,7 @@ app.post('/rendition/:uuid', upload.single('upload'), async (req, res) => {
 	await uploadImageToS3(filename, req.file, req.params.uuid);
 	await AddRenditionToDatabase(req.params.uuid, filename);
 	const link = `${process.env.DOMAIN}/viewOrder/${customer_id}`
-	const emailText = `Hi ${name},\n\nOur artists have finished your MyMoji.We can't wait to hear what you think.\n\nYou can check out your MyMoji at ${link}.`
+	const emailText = `Hi ${name},\n\nOur artists have finished your MyMoji. We can't wait to hear what you think.\n\nYou can check out your MyMoji at ${link}.`
 	sendEmail(email, "Your MyMoji is ready", emailText);
 	res.sendStatus(200);
 });
