@@ -12,7 +12,7 @@ const {
 	clearFeedbackInDatabase
 } = require("./serverUtil/dynamo");
 const {sendEmail, publishSlackMessage} = require("./serverUtil/messaging");
-require('short-uuid');
+const short = require('short-uuid');
 const humanId = require('human-readable-ids').hri;
 
 
@@ -214,7 +214,7 @@ app.get('/newCloseUp/:uuid', async (req, res) => {
  * 6. Sends Session ID response body
  */
 app.post('/create-checkout-session', upload.single('upload'), async (req, res) => {
-	const uuid = humanId.random();
+	const uuid = short.generate();
 	const domainURL = process.env.DOMAIN;
 	const pmTypes = (process.env.PAYMENT_METHOD_TYPES || 'card').split(',').map((m) => m.trim());
 	const session = await stripe.checkout.sessions.create({
