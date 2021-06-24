@@ -299,7 +299,8 @@ app.post('/webhook', async (req, res) => {
 		const {name, email, uuid} = metadata;
 		const domainURL = process.env.DOMAIN;
 		const artistPageLink = `<${domainURL}/artistView/${uuid}|Artist page>`;
-		const text = `We have a new order from ${name}\n\n\t${email}\n\n\t${artistPageLink}`
+		const customerPageLink = `<${domainURL}/viewOrder/${uuid}|Customer page>`;
+		const text = `We have a new order from ${name}\n\n\t${email}\n\n\t${artistPageLink}\n\n\t${customerPageLink}`
 		await publishSlackMessage(text);
 		const emailText = `Dear ${name},\n\nThank you for your order! Our artists will get to work right away. ` +
 			`We'll email you when your MyMoji is ready (expect to hear back from us within 24-48 hours).\n\nOrder Id: ${uuid}\n` +
@@ -344,7 +345,8 @@ app.post('/feedback/:uuid/:renditionNumber', upload.none(), async (req, res) => 
 	const {name, email, customer_id} = item
 	const domainURL = process.env.DOMAIN;
 	const artistPageLink = `<${domainURL}/artistView/${customer_id}|Artist page>`;
-	const text = `${name} gave feedback: ${feedback}\n\n\t${email}\n\n\t${artistPageLink}`
+	const customerPageLink = `<${domainURL}/viewOrder/${customer_id}|Customer page>`;
+	const text = `${name} gave feedback: ${feedback}\n\n\t${email}\n\n\t${artistPageLink}\n\n\t${customerPageLink}`
 	await publishSlackMessage(text);
 	res.sendStatus(200);
 })
@@ -377,7 +379,8 @@ app.post('/newMugshot/:uuid', upload.single('upload'), async (req, res) => {
 	const {name, email, customer_id} = item
 	const domainURL = process.env.DOMAIN;
 	const artistPageLink = `<${domainURL}/artistView/${customer_id}|Artist page>`;
-	const text = `${name} uploaded a new Mugshot:\n\n\t${email}\n\n\t${artistPageLink}`;
+	const customerPageLink = `<${domainURL}/viewOrder/${customer_id}|Customer page>`;
+	const text = `${name} uploaded a new Mugshot:\n\n\t${email}\n\n\t${artistPageLink}\n\n\t${customerPageLink}`;
 	await publishSlackMessage(text);
 	res.sendStatus(200);
 });
